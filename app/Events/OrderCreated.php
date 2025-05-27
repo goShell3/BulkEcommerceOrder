@@ -13,7 +13,9 @@ use Illuminate\Queue\SerializesModels;
 
 class OrderCreated implements ShouldBroadcast
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable;
+    use InteractsWithSockets;
+    use SerializesModels;
 
     /**
      * The order instance.
@@ -61,4 +63,4 @@ class OrderCreated implements ShouldBroadcast
             'created_at' => $this->order->created_at,
         ];
     }
-} 
+}

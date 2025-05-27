@@ -37,4 +37,4 @@ class B2BOrderApproval extends Model
     {
         return $this->belongsTo(User::class, 'approver_user_id');
     }
-} 
+}

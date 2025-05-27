@@ -87,7 +87,8 @@ class OrderEventSubscriber
             Log::info('Order created successfully', ['order_id' => $event->order->id]);
         } catch (\Exception $e) {
             Log::error(
-                'Error handling order created event', [
+                'Error handling order created event',
+                [
                 'order_id' => $event->order->id,
                 'error' => $e->getMessage()
                 ]
@@ -109,32 +110,34 @@ class OrderEventSubscriber
 
             // Handle specific status updates
             switch ($event->order->status) {
-            case 'processing':
-                $this->handleProcessingStatus($event->order);
-                break;
-            case 'shipped':
-                $this->handleShippedStatus($event->order);
-                break;
-            case 'delivered':
-                $this->handleDeliveredStatus($event->order);
-                break;
-            case 'cancelled':
-                $this->handleCancelledStatus($event->order);
-                break;
-            case 'refunded':
-                $this->handleRefundedStatus($event->order);
-                break;
+                case 'processing':
+                    $this->handleProcessingStatus($event->order);
+                    break;
+                case 'shipped':
+                    $this->handleShippedStatus($event->order);
+                    break;
+                case 'delivered':
+                    $this->handleDeliveredStatus($event->order);
+                    break;
+                case 'cancelled':
+                    $this->handleCancelledStatus($event->order);
+                    break;
+                case 'refunded':
+                    $this->handleRefundedStatus($event->order);
+                    break;
             }
 
             Log::info(
-                'Order status updated', [
+                'Order status updated',
+                [
                 'order_id' => $event->order->id,
                 'status' => $event->order->status
                 ]
             );
         } catch (\Exception $e) {
             Log::error(
-                'Error handling order status update', [
+                'Error handling order status update',
+                [
                 'order_id' => $event->order->id,
                 'error' => $e->getMessage()
                 ]
@@ -219,4 +222,4 @@ class OrderEventSubscriber
             [OrderEventSubscriber::class, 'handleOrderStatusUpdated']
         );
     }
-} 
+}

@@ -25,4 +25,4 @@ class UserResource extends JsonResource
             'updated_at' => $this->updated_at,
         ];
     }
-} 
+}

@@ -41,4 +41,4 @@ class UserAddress extends Model
     {
         return $this->hasMany(OrderAddress::class);
     }
-} 
+}

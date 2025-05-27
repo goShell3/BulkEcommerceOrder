@@ -37,7 +37,8 @@ class InventoryService
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error(
-                'Failed to update stock for order', [
+                'Failed to update stock for order',
+                [
                 'order_id' => $order->id,
                 'error' => $e->getMessage()
                 ]
@@ -69,7 +70,8 @@ class InventoryService
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error(
-                'Failed to restore stock for cancelled order', [
+                'Failed to restore stock for cancelled order',
+                [
                 'order_id' => $order->id,
                 'error' => $e->getMessage()
                 ]
@@ -98,14 +100,16 @@ class InventoryService
 
             DB::commit();
             Log::info(
-                'Stock restored for return request', [
+                'Stock restored for return request',
+                [
                 'return_request_id' => $returnRequest->id
                 ]
             );
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error(
-                'Failed to restore stock for return request', [
+                'Failed to restore stock for return request',
+                [
                 'return_request_id' => $returnRequest->id,
                 'error' => $e->getMessage()
                 ]
@@ -149,14 +153,16 @@ class InventoryService
         try {
             $product->update(['stock' => $quantity]);
             Log::info(
-                'Product stock updated', [
+                'Product stock updated',
+                [
                 'product_id' => $product->id,
                 'new_stock' => $quantity
                 ]
             );
         } catch (\Exception $e) {
             Log::error(
-                'Failed to update product stock', [
+                'Failed to update product stock',
+                [
                 'product_id' => $product->id,
                 'error' => $e->getMessage()
                 ]
@@ -164,4 +170,4 @@ class InventoryService
             throw $e;
         }
     }
-} 
+}

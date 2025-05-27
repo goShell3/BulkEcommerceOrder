@@ -13,7 +13,9 @@ use Illuminate\Queue\SerializesModels;
 
 class OrderCancelled implements ShouldBroadcast
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable;
+    use InteractsWithSockets;
+    use SerializesModels;
 
     /**
      * The order instance.
@@ -70,4 +72,4 @@ class OrderCancelled implements ShouldBroadcast
             'cancelled_at' => $this->order->updated_at,
         ];
     }
-} 
+}

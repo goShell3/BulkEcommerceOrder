@@ -181,4 +181,4 @@ class CategoryController extends Controller
         $category->delete();
         return response()->json(null, 204);
     }
-} 
+}

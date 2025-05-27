@@ -13,7 +13,9 @@ use Illuminate\Queue\SerializesModels;
 
 class ReturnRequestCreated implements ShouldBroadcast
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable;
+    use InteractsWithSockets;
+    use SerializesModels;
 
     /**
      * The return request instance.
@@ -62,4 +64,4 @@ class ReturnRequestCreated implements ShouldBroadcast
             'created_at' => $this->returnRequest->created_at,
         ];
     }
-} 
+}

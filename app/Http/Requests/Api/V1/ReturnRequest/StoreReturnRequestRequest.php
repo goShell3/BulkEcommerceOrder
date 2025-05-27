@@ -55,11 +55,11 @@ class StoreReturnRequestRequest extends FormRequest
         $validator->after(
             function ($validator) {
                 $order = \App\Models\Order::find($this->order_id);
-            
+
                 if ($order && !$order->canBeReturned()) {
                     $validator->errors()->add('order_id', 'This order cannot be returned.');
                 }
             }
         );
     }
-} 
+}

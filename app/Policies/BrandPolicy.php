@@ -73,4 +73,4 @@ class BrandPolicy
     {
         return $user->hasRole('admin');
     }
-} 
+}

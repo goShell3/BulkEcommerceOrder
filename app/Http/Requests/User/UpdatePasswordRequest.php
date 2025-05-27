@@ -35,4 +35,4 @@ class UpdatePasswordRequest extends FormRequest
             ],
         ];
     }
-} 
+}

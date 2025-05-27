@@ -57,7 +57,8 @@ class BrandController extends BaseController
     public function store(Request $request): JsonResponse
     {
         $validator = Validator::make(
-            $request->all(), [
+            $request->all(),
+            [
             'name' => 'required|string|max:255',
             'slug' => 'required|string|max:255|unique:brands',
             'description' => 'nullable|string',
@@ -88,7 +89,8 @@ class BrandController extends BaseController
     public function update(Request $request, Brand $brand): JsonResponse
     {
         $validator = Validator::make(
-            $request->all(), [
+            $request->all(),
+            [
             'name' => 'sometimes|required|string|max:255',
             'slug' => 'sometimes|required|string|max:255|unique:brands,slug,' . $brand->id,
             'description' => 'nullable|string',
@@ -126,4 +128,4 @@ class BrandController extends BaseController
 
         return $this->sendResponse(null, 'Brand deleted successfully.');
     }
-} 
+}

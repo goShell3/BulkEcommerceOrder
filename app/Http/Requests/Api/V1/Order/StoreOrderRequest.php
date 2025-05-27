@@ -53,4 +53,4 @@ class StoreOrderRequest extends FormRequest
             'shipping_address.country.required' => 'Country is required.',
         ];
     }
-} 
+}

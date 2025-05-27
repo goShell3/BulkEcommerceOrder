@@ -35,4 +35,4 @@ class UsedDiscount extends Model
     {
         return $this->belongsTo(Order::class);
     }
-} 
+}

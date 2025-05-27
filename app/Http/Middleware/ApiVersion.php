@@ -16,13 +16,13 @@ class ApiVersion
     public function handle(Request $request, Closure $next): Response
     {
         $version = $request->header('Accept-Version');
-        
+
         if (!$version) {
             $version = config('app.api.version', 'v1');
         }
 
         $request->attributes->set('api_version', $version);
-        
+
         return $next($request);
     }
-} 
+}

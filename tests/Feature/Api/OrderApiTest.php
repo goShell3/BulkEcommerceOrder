@@ -19,9 +19,9 @@ class OrderApiTest extends TestCase
     }
 
     /**
-     * 
      *
-     * @test 
+     *
+     * @test
      */
     public function itCanListOrders()
     {
@@ -50,9 +50,9 @@ class OrderApiTest extends TestCase
     }
 
     /**
-     * 
      *
-     * @test 
+     *
+     * @test
      */
     public function itCanCreateAnOrder()
     {
@@ -84,9 +84,9 @@ class OrderApiTest extends TestCase
     }
 
     /**
-     * 
      *
-     * @test 
+     *
+     * @test
      */
     public function itCanShowAnOrder()
     {
@@ -111,9 +111,9 @@ class OrderApiTest extends TestCase
     }
 
     /**
-     * 
      *
-     * @test 
+     *
+     * @test
      */
     public function itCanUpdateAnOrder()
     {
@@ -132,9 +132,9 @@ class OrderApiTest extends TestCase
     }
 
     /**
-     * 
      *
-     * @test 
+     *
+     * @test
      */
     public function itCanDeleteAnOrder()
     {
@@ -147,9 +147,9 @@ class OrderApiTest extends TestCase
     }
 
     /**
-     * 
      *
-     * @test 
+     *
+     * @test
      */
     public function itValidatesRequiredFieldsWhenCreatingOrder()
     {
@@ -160,9 +160,9 @@ class OrderApiTest extends TestCase
     }
 
     /**
-     * 
      *
-     * @test 
+     *
+     * @test
      */
     public function itValidatesNumericTotalField()
     {
@@ -178,4 +178,4 @@ class OrderApiTest extends TestCase
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['total']);
     }
-} 
+}

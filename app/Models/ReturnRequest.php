@@ -44,7 +44,7 @@ class ReturnRequest extends Model
         ];
 
         // Check if the current status exists and if the new status is a valid transition
-        return isset($validTransitions[$this->status]) && 
+        return isset($validTransitions[$this->status]) &&
                in_array($status, $validTransitions[$this->status]);
     }
 
@@ -79,4 +79,4 @@ class ReturnRequest extends Model
     {
         return $query->where('status', 'completed');
     }
-} 
+}

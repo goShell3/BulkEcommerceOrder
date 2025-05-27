@@ -30,7 +30,8 @@ class ShippingService
             $order->update(['tracking_number' => $trackingNumber]);
 
             Log::info(
-                'Tracking number generated', [
+                'Tracking number generated',
+                [
                 'order_id' => $order->id,
                 'tracking_number' => $trackingNumber
                 ]
@@ -39,7 +40,8 @@ class ShippingService
             return $trackingNumber;
         } catch (\Exception $e) {
             Log::error(
-                'Failed to generate tracking number', [
+                'Failed to generate tracking number',
+                [
                 'order_id' => $order->id,
                 'error' => $e->getMessage()
                 ]
@@ -69,7 +71,8 @@ class ShippingService
             $totalCost = $baseCost + $weightCost + $distanceCost;
 
             Log::info(
-                'Shipping cost calculated', [
+                'Shipping cost calculated',
+                [
                 'order_id' => $order->id,
                 'shipping_cost' => $totalCost
                 ]
@@ -78,7 +81,8 @@ class ShippingService
             return $totalCost;
         } catch (\Exception $e) {
             Log::error(
-                'Failed to calculate shipping cost', [
+                'Failed to calculate shipping cost',
+                [
                 'order_id' => $order->id,
                 'error' => $e->getMessage()
                 ]
@@ -131,7 +135,7 @@ class ShippingService
         $prefix = $carrier->tracking_prefix;
         $timestamp = time();
         $random = str_pad(mt_rand(1, 999999), 6, '0', STR_PAD_LEFT);
-        
+
         return $prefix . $timestamp . $random;
     }
 
@@ -158,4 +162,4 @@ class ShippingService
     {
         return ShippingCarrier::find($carrierId);
     }
-} 
+}

@@ -38,4 +38,4 @@ class UpdateOrderStatusRequest extends FormRequest
             'status.in' => 'Invalid order status. Allowed values are: processing, shipped, delivered, cancelled.',
         ];
     }
-} 
+}

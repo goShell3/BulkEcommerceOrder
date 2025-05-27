@@ -118,7 +118,8 @@ class AuthController extends Controller
             [
             'token' => $token,
             'user' => new UserResource($user)
-            ], 201
+            ],
+            201
         );
     }
 
@@ -218,4 +219,4 @@ class AuthController extends Controller
     {
         return $this->sendResponse($request->user(), 'User retrieved successfully.');
     }
-} 
+}

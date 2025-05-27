@@ -58,7 +58,7 @@ class OrderStatusNotification extends Notification implements ShouldQueue
      */
     public function toMail($notifiable): MailMessage
     {
-        $message = (new MailMessage)
+        $message = (new MailMessage())
             ->subject('Order Status Update - Order #' . $this->order->id)
             ->greeting('Hello ' . $notifiable->name)
             ->line('Your order status has been updated.');
@@ -90,4 +90,4 @@ class OrderStatusNotification extends Notification implements ShouldQueue
             'updated_at' => $this->order->updated_at,
         ];
     }
-} 
+}

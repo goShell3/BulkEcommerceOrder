@@ -13,7 +13,9 @@ use Illuminate\Queue\SerializesModels;
 
 class ReturnRequestStatusUpdated implements ShouldBroadcast
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable;
+    use InteractsWithSockets;
+    use SerializesModels;
 
     /**
      * The return request instance.
@@ -71,4 +73,4 @@ class ReturnRequestStatusUpdated implements ShouldBroadcast
             'updated_at' => $this->returnRequest->updated_at,
         ];
     }
-} 
+}

@@ -31,4 +31,4 @@ class ShippingMethod extends Model
     {
         return $this->belongsTo(ShippingCarrier::class, 'carrier_id');
     }
-} 
+}

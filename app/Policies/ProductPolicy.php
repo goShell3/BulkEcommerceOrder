@@ -81,4 +81,4 @@ class ProductPolicy
     {
         return $user->hasRole('admin');
     }
-} 
+}
