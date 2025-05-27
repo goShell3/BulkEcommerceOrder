@@ -12,7 +12,7 @@ class BrandController extends BaseController
     /**
      * Display a listing of the brands.
      *
-     * @param  Request  $request
+     * @param  Request $request
      * @return JsonResponse
      */
     public function index(Request $request): JsonResponse
@@ -38,7 +38,7 @@ class BrandController extends BaseController
     /**
      * Display the specified brand.
      *
-     * @param  Brand  $brand
+     * @param  Brand $brand
      * @return JsonResponse
      */
     public function show(Brand $brand): JsonResponse
@@ -51,12 +51,13 @@ class BrandController extends BaseController
     /**
      * Store a newly created brand.
      *
-     * @param  Request  $request
+     * @param  Request $request
      * @return JsonResponse
      */
     public function store(Request $request): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
+        $validator = Validator::make(
+            $request->all(), [
             'name' => 'required|string|max:255',
             'slug' => 'required|string|max:255|unique:brands',
             'description' => 'nullable|string',
@@ -65,7 +66,8 @@ class BrandController extends BaseController
             'status' => 'required|in:active,inactive',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:255',
-        ]);
+            ]
+        );
 
         if ($validator->fails()) {
             return $this->sendError('Validation Error.', $validator->errors()->toArray(), 422);
@@ -79,13 +81,14 @@ class BrandController extends BaseController
     /**
      * Update the specified brand.
      *
-     * @param  Request  $request
-     * @param  Brand  $brand
+     * @param  Request $request
+     * @param  Brand   $brand
      * @return JsonResponse
      */
     public function update(Request $request, Brand $brand): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
+        $validator = Validator::make(
+            $request->all(), [
             'name' => 'sometimes|required|string|max:255',
             'slug' => 'sometimes|required|string|max:255|unique:brands,slug,' . $brand->id,
             'description' => 'nullable|string',
@@ -94,7 +97,8 @@ class BrandController extends BaseController
             'status' => 'sometimes|required|in:active,inactive',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:255',
-        ]);
+            ]
+        );
 
         if ($validator->fails()) {
             return $this->sendError('Validation Error.', $validator->errors()->toArray(), 422);
@@ -108,7 +112,7 @@ class BrandController extends BaseController
     /**
      * Remove the specified brand.
      *
-     * @param  Brand  $brand
+     * @param  Brand $brand
      * @return JsonResponse
      */
     public function destroy(Brand $brand): JsonResponse

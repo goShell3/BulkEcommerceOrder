@@ -23,19 +23,19 @@ class CategoryController extends Controller
      *     path="/api/v1/categories",
      *     summary="Get all categories",
      *     tags={"Categories"},
-     *     @OA\Parameter(
+     * @OA\Parameter(
      *         name="parent_id",
      *         in="query",
      *         description="Filter by parent category ID",
      *         required=false,
-     *         @OA\Schema(type="integer")
+     * @OA\Schema(type="integer")
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=200,
      *         description="List of categories",
-     *         @OA\JsonContent(
+     * @OA\JsonContent(
      *             type="object",
-     *             @OA\Property(property="data", type="array", @OA\Items(ref="#/components/schemas/Category"))
+     * @OA\Property(property="data", type="array", @OA\Items(ref="#/components/schemas/Category"))
      *         )
      *     )
      * )
@@ -57,18 +57,18 @@ class CategoryController extends Controller
      *     path="/api/v1/categories/{id}",
      *     summary="Get category details",
      *     tags={"Categories"},
-     *     @OA\Parameter(
+     * @OA\Parameter(
      *         name="id",
      *         in="path",
      *         required=true,
-     *         @OA\Schema(type="integer")
+     * @OA\Schema(type="integer")
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=200,
      *         description="Category details",
-     *         @OA\JsonContent(ref="#/components/schemas/Category")
+     * @OA\JsonContent(ref="#/components/schemas/Category")
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=404,
      *         description="Category not found"
      *     )
@@ -85,22 +85,22 @@ class CategoryController extends Controller
      *     summary="Create a new category",
      *     tags={"Categories"},
      *     security={{"bearerAuth":{}}},
-     *     @OA\RequestBody(
+     * @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(
+     * @OA\JsonContent(
      *             required={"name"},
-     *             @OA\Property(property="name", type="string", example="Electronics"),
-     *             @OA\Property(property="description", type="string", example="Electronic devices and accessories"),
-     *             @OA\Property(property="parent_id", type="integer", example=1),
-     *             @OA\Property(property="status", type="string", example="active")
+     * @OA\Property(property="name",                        type="string", example="Electronics"),
+     * @OA\Property(property="description",                 type="string", example="Electronic devices and accessories"),
+     * @OA\Property(property="parent_id",                   type="integer", example=1),
+     * @OA\Property(property="status",                      type="string", example="active")
      *         )
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=201,
      *         description="Category created successfully",
-     *         @OA\JsonContent(ref="#/components/schemas/Category")
+     * @OA\JsonContent(ref="#/components/schemas/Category")
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=422,
      *         description="Validation error"
      *     )
@@ -118,31 +118,31 @@ class CategoryController extends Controller
      *     summary="Update a category",
      *     tags={"Categories"},
      *     security={{"bearerAuth":{}}},
-     *     @OA\Parameter(
+     * @OA\Parameter(
      *         name="id",
      *         in="path",
      *         required=true,
-     *         @OA\Schema(type="integer")
+     * @OA\Schema(type="integer")
      *     ),
-     *     @OA\RequestBody(
+     * @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(
-     *             @OA\Property(property="name", type="string", example="Updated Category"),
-     *             @OA\Property(property="description", type="string", example="Updated description"),
-     *             @OA\Property(property="parent_id", type="integer", example=1),
-     *             @OA\Property(property="status", type="string", example="active")
+     * @OA\JsonContent(
+     * @OA\Property(property="name",                        type="string", example="Updated Category"),
+     * @OA\Property(property="description",                 type="string", example="Updated description"),
+     * @OA\Property(property="parent_id",                   type="integer", example=1),
+     * @OA\Property(property="status",                      type="string", example="active")
      *         )
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=200,
      *         description="Category updated successfully",
-     *         @OA\JsonContent(ref="#/components/schemas/Category")
+     * @OA\JsonContent(ref="#/components/schemas/Category")
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=404,
      *         description="Category not found"
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=422,
      *         description="Validation error"
      *     )
@@ -160,17 +160,17 @@ class CategoryController extends Controller
      *     summary="Delete a category",
      *     tags={"Categories"},
      *     security={{"bearerAuth":{}}},
-     *     @OA\Parameter(
+     * @OA\Parameter(
      *         name="id",
      *         in="path",
      *         required=true,
-     *         @OA\Schema(type="integer")
+     * @OA\Schema(type="integer")
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=204,
      *         description="Category deleted successfully"
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=404,
      *         description="Category not found"
      *     )

@@ -29,34 +29,34 @@ class OrderController extends Controller
      *     summary="Get all orders",
      *     tags={"Orders"},
      *     security={{"bearerAuth":{}}},
-     *     @OA\Parameter(
+     * @OA\Parameter(
      *         name="status",
      *         in="query",
      *         description="Filter by order status",
      *         required=false,
-     *         @OA\Schema(type="string", enum={"pending", "processing", "shipped", "delivered", "cancelled"})
+     * @OA\Schema(type="string",     enum={"pending", "processing", "shipped", "delivered", "cancelled"})
      *     ),
-     *     @OA\Parameter(
+     * @OA\Parameter(
      *         name="sort",
      *         in="query",
      *         description="Sort field (created_at, total)",
      *         required=false,
-     *         @OA\Schema(type="string")
+     * @OA\Schema(type="string")
      *     ),
-     *     @OA\Parameter(
+     * @OA\Parameter(
      *         name="order",
      *         in="query",
      *         description="Sort order (asc, desc)",
      *         required=false,
-     *         @OA\Schema(type="string")
+     * @OA\Schema(type="string")
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=200,
      *         description="List of orders",
-     *         @OA\JsonContent(
+     * @OA\JsonContent(
      *             type="object",
-     *             @OA\Property(property="data", type="array", @OA\Items(ref="#/components/schemas/Order")),
-     *             @OA\Property(property="meta", type="object", @OA\Property(property="total", type="integer"))
+     * @OA\Property(property="data", type="array", @OA\Items(ref="#/components/schemas/Order")),
+     * @OA\Property(property="meta", type="object", @OA\Property(property="total", type="integer"))
      *         )
      *     )
      * )
@@ -84,18 +84,18 @@ class OrderController extends Controller
      *     summary="Get order details",
      *     tags={"Orders"},
      *     security={{"bearerAuth":{}}},
-     *     @OA\Parameter(
+     * @OA\Parameter(
      *         name="id",
      *         in="path",
      *         required=true,
-     *         @OA\Schema(type="integer")
+     * @OA\Schema(type="integer")
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=200,
      *         description="Order details",
-     *         @OA\JsonContent(ref="#/components/schemas/Order")
+     * @OA\JsonContent(ref="#/components/schemas/Order")
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=404,
      *         description="Order not found"
      *     )
@@ -112,38 +112,38 @@ class OrderController extends Controller
      *     summary="Create a new order",
      *     tags={"Orders"},
      *     security={{"bearerAuth":{}}},
-     *     @OA\RequestBody(
+     * @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(
+     * @OA\JsonContent(
      *             required={"items", "shipping_address"},
-     *             @OA\Property(
+     * @OA\Property(
      *                 property="items",
      *                 type="array",
-     *                 @OA\Items(
+     * @OA\Items(
      *                     type="object",
      *                     required={"product_id", "quantity"},
-     *                     @OA\Property(property="product_id", type="integer", example=1),
-     *                     @OA\Property(property="quantity", type="integer", example=2)
+     * @OA\Property(property="product_id",               type="integer", example=1),
+     * @OA\Property(property="quantity",                 type="integer", example=2)
      *                 )
      *             ),
-     *             @OA\Property(
+     * @OA\Property(
      *                 property="shipping_address",
      *                 type="object",
      *                 required={"address", "city", "state", "zip_code", "country"},
-     *                 @OA\Property(property="address", type="string", example="123 Main St"),
-     *                 @OA\Property(property="city", type="string", example="New York"),
-     *                 @OA\Property(property="state", type="string", example="NY"),
-     *                 @OA\Property(property="zip_code", type="string", example="10001"),
-     *                 @OA\Property(property="country", type="string", example="USA")
+     * @OA\Property(property="address",                  type="string", example="123 Main St"),
+     * @OA\Property(property="city",                     type="string", example="New York"),
+     * @OA\Property(property="state",                    type="string", example="NY"),
+     * @OA\Property(property="zip_code",                 type="string", example="10001"),
+     * @OA\Property(property="country",                  type="string", example="USA")
      *             )
      *         )
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=201,
      *         description="Order created successfully",
-     *         @OA\JsonContent(ref="#/components/schemas/Order")
+     * @OA\JsonContent(ref="#/components/schemas/Order")
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=422,
      *         description="Validation error"
      *     )
@@ -151,19 +151,23 @@ class OrderController extends Controller
      */
     public function store(StoreOrderRequest $request): OrderResource
     {
-        $order = Order::create([
+        $order = Order::create(
+            [
             'user_id' => auth()->id(),
             'status' => 'pending',
             'shipping_address' => $request->shipping_address,
             'total' => 0, // Will be calculated in the observer
-        ]);
+            ]
+        );
 
         foreach ($request->items as $item) {
-            $order->items()->create([
+            $order->items()->create(
+                [
                 'product_id' => $item['product_id'],
                 'quantity' => $item['quantity'],
                 'price' => 0, // Will be set from product price
-            ]);
+                ]
+            );
         }
 
         return new OrderResource($order->load(['items.product', 'user']));
@@ -175,17 +179,17 @@ class OrderController extends Controller
      *     summary="Update order status",
      *     tags={"Orders"},
      *     security={{"bearerAuth":{}}},
-     *     @OA\Parameter(
+     * @OA\Parameter(
      *         name="id",
      *         in="path",
      *         required=true,
-     *         @OA\Schema(type="integer")
+     * @OA\Schema(type="integer")
      *     ),
-     *     @OA\RequestBody(
+     * @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(
+     * @OA\JsonContent(
      *             required={"status"},
-     *             @OA\Property(
+     * @OA\Property(
      *                 property="status",
      *                 type="string",
      *                 enum={"processing", "shipped", "delivered", "cancelled"},
@@ -193,16 +197,16 @@ class OrderController extends Controller
      *             )
      *         )
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=200,
      *         description="Order status updated successfully",
-     *         @OA\JsonContent(ref="#/components/schemas/Order")
+     * @OA\JsonContent(ref="#/components/schemas/Order")
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=404,
      *         description="Order not found"
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=422,
      *         description="Validation error"
      *     )
@@ -220,22 +224,22 @@ class OrderController extends Controller
      *     summary="Cancel an order",
      *     tags={"Orders"},
      *     security={{"bearerAuth":{}}},
-     *     @OA\Parameter(
+     * @OA\Parameter(
      *         name="id",
      *         in="path",
      *         required=true,
-     *         @OA\Schema(type="integer")
+     * @OA\Schema(type="integer")
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=200,
      *         description="Order cancelled successfully",
-     *         @OA\JsonContent(ref="#/components/schemas/Order")
+     * @OA\JsonContent(ref="#/components/schemas/Order")
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=404,
      *         description="Order not found"
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=422,
      *         description="Order cannot be cancelled"
      *     )
@@ -257,30 +261,30 @@ class OrderController extends Controller
      *     summary="Request order return",
      *     tags={"Orders"},
      *     security={{"bearerAuth":{}}},
-     *     @OA\Parameter(
+     * @OA\Parameter(
      *         name="id",
      *         in="path",
      *         required=true,
-     *         @OA\Schema(type="integer")
+     * @OA\Schema(type="integer")
      *     ),
-     *     @OA\RequestBody(
+     * @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(
+     * @OA\JsonContent(
      *             required={"reason"},
-     *             @OA\Property(property="reason", type="string", example="Product damaged"),
-     *             @OA\Property(property="description", type="string", example="The product arrived with visible damage")
+     * @OA\Property(property="reason",                           type="string", example="Product damaged"),
+     * @OA\Property(property="description",                      type="string", example="The product arrived with visible damage")
      *         )
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=201,
      *         description="Return request created successfully",
-     *         @OA\JsonContent(ref="#/components/schemas/ReturnRequest")
+     * @OA\JsonContent(ref="#/components/schemas/ReturnRequest")
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=404,
      *         description="Order not found"
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=422,
      *         description="Return request cannot be created"
      *     )
@@ -292,11 +296,13 @@ class OrderController extends Controller
             return response()->json(['message' => 'Order cannot be returned'], 422);
         }
 
-        $returnRequest = $order->returnRequests()->create([
+        $returnRequest = $order->returnRequests()->create(
+            [
             'reason' => $request->reason,
             'description' => $request->description,
             'status' => 'pending'
-        ]);
+            ]
+        );
 
         return response()->json(new ReturnRequestResource($returnRequest), 201);
     }

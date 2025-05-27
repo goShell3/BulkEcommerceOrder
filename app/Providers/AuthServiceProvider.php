@@ -50,55 +50,79 @@ class AuthServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // Register Gates for role-based authorization
-        Gate::define('is-admin', function (User $user) {
-            return $user->hasRole('admin');
-        });
+        Gate::define(
+            'is-admin', function (User $user) {
+                return $user->hasRole('admin');
+            }
+        );
 
-        Gate::define('is-b2b', function (User $user) {
-            return $user->hasRole('b2b');
-        });
+        Gate::define(
+            'is-b2b', function (User $user) {
+                return $user->hasRole('b2b');
+            }
+        );
 
         // Register Gates for resource ownership
-        Gate::define('manage-order', function (User $user, Order $order) {
-            return $user->id === $order->user_id || $user->hasRole('admin');
-        });
+        Gate::define(
+            'manage-order', function (User $user, Order $order) {
+                return $user->id === $order->user_id || $user->hasRole('admin');
+            }
+        );
 
-        Gate::define('manage-return', function (User $user, ReturnRequest $returnRequest) {
-            return $user->id === $returnRequest->user_id || $user->hasRole('admin');
-        });
+        Gate::define(
+            'manage-return', function (User $user, ReturnRequest $returnRequest) {
+                return $user->id === $returnRequest->user_id || $user->hasRole('admin');
+            }
+        );
 
         // Register Gates for resource management
-        Gate::define('manage-products', function (User $user) {
-            return $user->hasRole('admin');
-        });
+        Gate::define(
+            'manage-products', function (User $user) {
+                return $user->hasRole('admin');
+            }
+        );
 
-        Gate::define('manage-categories', function (User $user) {
-            return $user->hasRole('admin');
-        });
+        Gate::define(
+            'manage-categories', function (User $user) {
+                return $user->hasRole('admin');
+            }
+        );
 
-        Gate::define('manage-brands', function (User $user) {
-            return $user->hasRole('admin');
-        });
+        Gate::define(
+            'manage-brands', function (User $user) {
+                return $user->hasRole('admin');
+            }
+        );
 
-        Gate::define('manage-discounts', function (User $user) {
-            return $user->hasRole('admin');
-        });
+        Gate::define(
+            'manage-discounts', function (User $user) {
+                return $user->hasRole('admin');
+            }
+        );
 
-        Gate::define('manage-shipping', function (User $user) {
-            return $user->hasRole('admin');
-        });
+        Gate::define(
+            'manage-shipping', function (User $user) {
+                return $user->hasRole('admin');
+            }
+        );
 
-        Gate::define('manage-payment-gateways', function (User $user) {
-            return $user->hasRole('admin');
-        });
+        Gate::define(
+            'manage-payment-gateways', function (User $user) {
+                return $user->hasRole('admin');
+            }
+        );
 
         // Register Gates for B2B specific actions
-        Gate::define('view-b2b-prices', function (User $user) {
-            return $user->hasRole(['admin', 'b2b']);
-        });
+        Gate::define(
+            'view-b2b-prices', function (User $user) {
+                return $user->hasRole(['admin', 'b2b']);
+            }
+        );
 
-        Gate::define('manage-b2b-orders', function (User $user) {
-            return $user->hasRole(['admin', 'b2b']);
-        });
+        Gate::define(
+            'manage-b2b-orders', function (User $user) {
+                return $user->hasRole(['admin', 'b2b']);
+            }
+        );
     }
 } 

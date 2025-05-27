@@ -32,8 +32,8 @@ class OrderDelivered implements ShouldBroadcast
     /**
      * Create a new event instance.
      *
-     * @param  \App\Models\Order  $order
-     * @param  string|null  $deliveryConfirmation
+     * @param  \App\Models\Order $order
+     * @param  string|null       $deliveryConfirmation
      * @return void
      */
     public function __construct(Order $order, ?string $deliveryConfirmation = null)

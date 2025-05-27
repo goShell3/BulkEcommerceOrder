@@ -14,7 +14,7 @@ class OrderAndReturnTest extends TestCase
     use RefreshDatabase;
 
     #[Test]
-    public function it_can_create_an_order_with_default_factory()
+    public function itCanCreateAnOrderWithDefaultFactory()
     {
         $order = Order::factory()->create();
         
@@ -29,7 +29,7 @@ class OrderAndReturnTest extends TestCase
     }
 
     #[Test]
-    public function it_can_create_orders_with_different_statuses()
+    public function itCanCreateOrdersWithDifferentStatuses()
     {
         $pendingOrder = Order::factory()->pending()->create();
         $processingOrder = Order::factory()->processing()->create();
@@ -45,7 +45,7 @@ class OrderAndReturnTest extends TestCase
     }
 
     #[Test]
-    public function it_can_create_orders_with_different_values()
+    public function itCanCreateOrdersWithDifferentValues()
     {
         $highValueOrder = Order::factory()->highValue()->create();
         $lowValueOrder = Order::factory()->lowValue()->create();
@@ -55,7 +55,7 @@ class OrderAndReturnTest extends TestCase
     }
 
     #[Test]
-    public function it_can_create_orders_from_different_locations()
+    public function itCanCreateOrdersFromDifferentLocations()
     {
         $usOrder = Order::factory()->fromUS()->create();
         $canadaOrder = Order::factory()->fromCanada()->create();
@@ -73,7 +73,7 @@ class OrderAndReturnTest extends TestCase
     }
 
     #[Test]
-    public function it_can_create_a_return_request_with_default_factory()
+    public function itCanCreateAReturnRequestWithDefaultFactory()
     {
         $returnRequest = ReturnRequest::factory()->create();
         
@@ -84,7 +84,7 @@ class OrderAndReturnTest extends TestCase
     }
 
     #[Test]
-    public function it_can_create_return_requests_with_different_statuses()
+    public function itCanCreateReturnRequestsWithDifferentStatuses()
     {
         $pendingReturn = ReturnRequest::factory()->pending()->create();
         $approvedReturn = ReturnRequest::factory()->approved()->create();
@@ -98,7 +98,7 @@ class OrderAndReturnTest extends TestCase
     }
 
     #[Test]
-    public function it_can_create_return_requests_with_different_reasons()
+    public function itCanCreateReturnRequestsWithDifferentReasons()
     {
         $damagedReturn = ReturnRequest::factory()->damaged()->create();
         $wrongItemReturn = ReturnRequest::factory()->wrongItem()->create();
@@ -120,7 +120,7 @@ class OrderAndReturnTest extends TestCase
     }
 
     #[Test]
-    public function it_can_create_urgent_return_requests()
+    public function itCanCreateUrgentReturnRequests()
     {
         $urgentReturn = ReturnRequest::factory()->urgent()->create();
         
@@ -130,21 +130,23 @@ class OrderAndReturnTest extends TestCase
     }
 
     #[Test]
-    public function it_can_create_high_value_return_requests()
+    public function itCanCreateHighValueReturnRequests()
     {
         // Create a high-value order first
         $order = Order::factory()->highValue()->create();
         
         // Create a return request for this order
-        $returnRequest = ReturnRequest::factory()->create([
+        $returnRequest = ReturnRequest::factory()->create(
+            [
             'order_id' => $order->id
-        ]);
+            ]
+        );
         
         $this->assertGreaterThanOrEqual(500, $returnRequest->order->total);
     }
 
     #[Test]
-    public function it_can_create_complex_order_and_return_scenarios()
+    public function itCanCreateComplexOrderAndReturnScenarios()
     {
         // Create a high-value order from California with a quality issue return
         $order = Order::factory()

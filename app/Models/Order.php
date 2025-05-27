@@ -89,9 +89,11 @@ class Order extends Model
      */
     public function calculateTotal(): void
     {
-        $total = $this->items->sum(function ($item) {
-            return $item->price * $item->quantity;
-        });
+        $total = $this->items->sum(
+            function ($item) {
+                return $item->price * $item->quantity;
+            }
+        );
 
         $this->update(['total' => $total]);
     }

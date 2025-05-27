@@ -12,7 +12,8 @@ class AuthController extends Controller
 {
     public function __construct(
         private readonly AuthService $authService
-    ) {}
+    ) {
+    }
 
     /**
      * Handle user login request.
@@ -25,9 +26,11 @@ class AuthController extends Controller
         );
 
         if (!$result['success']) {
-            return response()->json([
+            return response()->json(
+                [
                 'message' => $result['message']
-            ], 401);
+                ], 401
+            );
         }
 
         return response()->json(new LoginResource($result['data']));
@@ -40,9 +43,11 @@ class AuthController extends Controller
     {
         $this->authService->logout();
 
-        return response()->json([
+        return response()->json(
+            [
             'message' => 'Successfully logged out'
-        ]);
+            ]
+        );
     }
 
     /**

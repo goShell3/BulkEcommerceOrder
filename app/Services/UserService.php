@@ -40,8 +40,10 @@ class UserService
             throw new \InvalidArgumentException('Current password is incorrect');
         }
 
-        $user->update([
+        $user->update(
+            [
             'password' => Hash::make($newPassword)
-        ]);
+            ]
+        );
     }
 } 

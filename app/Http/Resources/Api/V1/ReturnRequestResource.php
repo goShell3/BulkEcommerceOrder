@@ -10,14 +10,14 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *     schema="ReturnRequest",
  *     title="ReturnRequest",
  *     description="Return request model",
- *     @OA\Property(property="id", type="integer", example=1),
- *     @OA\Property(property="order_id", type="integer", example=1),
- *     @OA\Property(property="reason", type="string", example="Product damaged"),
- *     @OA\Property(property="description", type="string", example="The product arrived with visible damage"),
- *     @OA\Property(property="status", type="string", example="pending"),
- *     @OA\Property(property="created_at", type="string", format="date-time"),
- *     @OA\Property(property="updated_at", type="string", format="date-time"),
- *     @OA\Property(
+ * @OA\Property(property="id",          type="integer", example=1),
+ * @OA\Property(property="order_id",    type="integer", example=1),
+ * @OA\Property(property="reason",      type="string", example="Product damaged"),
+ * @OA\Property(property="description", type="string", example="The product arrived with visible damage"),
+ * @OA\Property(property="status",      type="string", example="pending"),
+ * @OA\Property(property="created_at",  type="string", format="date-time"),
+ * @OA\Property(property="updated_at",  type="string", format="date-time"),
+ * @OA\Property(
  *         property="order",
  *         ref="#/components/schemas/Order"
  *     )

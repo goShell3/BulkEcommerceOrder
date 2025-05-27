@@ -23,41 +23,41 @@ class ProductController extends Controller
      *     path="/api/v1/products",
      *     summary="Get all products",
      *     tags={"Products"},
-     *     @OA\Parameter(
+     * @OA\Parameter(
      *         name="category",
      *         in="query",
      *         description="Filter by category ID",
      *         required=false,
-     *         @OA\Schema(type="integer")
+     * @OA\Schema(type="integer")
      *     ),
-     *     @OA\Parameter(
+     * @OA\Parameter(
      *         name="search",
      *         in="query",
      *         description="Search in name and description",
      *         required=false,
-     *         @OA\Schema(type="string")
+     * @OA\Schema(type="string")
      *     ),
-     *     @OA\Parameter(
+     * @OA\Parameter(
      *         name="sort",
      *         in="query",
      *         description="Sort field (price, created_at)",
      *         required=false,
-     *         @OA\Schema(type="string")
+     * @OA\Schema(type="string")
      *     ),
-     *     @OA\Parameter(
+     * @OA\Parameter(
      *         name="order",
      *         in="query",
      *         description="Sort order (asc, desc)",
      *         required=false,
-     *         @OA\Schema(type="string")
+     * @OA\Schema(type="string")
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=200,
      *         description="List of products",
-     *         @OA\JsonContent(
+     * @OA\JsonContent(
      *             type="object",
-     *             @OA\Property(property="data", type="array", @OA\Items(ref="#/components/schemas/Product")),
-     *             @OA\Property(property="meta", type="object", @OA\Property(property="total", type="integer"))
+     * @OA\Property(property="data", type="array", @OA\Items(ref="#/components/schemas/Product")),
+     * @OA\Property(property="meta", type="object", @OA\Property(property="total", type="integer"))
      *         )
      *     )
      * )
@@ -71,10 +71,12 @@ class ProductController extends Controller
         }
 
         if (request('search')) {
-            $query->where(function ($q) {
-                $q->where('name', 'like', '%' . request('search') . '%')
-                  ->orWhere('description', 'like', '%' . request('search') . '%');
-            });
+            $query->where(
+                function ($q) {
+                    $q->where('name', 'like', '%' . request('search') . '%')
+                        ->orWhere('description', 'like', '%' . request('search') . '%');
+                }
+            );
         }
 
         if (request('sort')) {
@@ -92,18 +94,18 @@ class ProductController extends Controller
      *     path="/api/v1/products/{id}",
      *     summary="Get product details",
      *     tags={"Products"},
-     *     @OA\Parameter(
+     * @OA\Parameter(
      *         name="id",
      *         in="path",
      *         required=true,
-     *         @OA\Schema(type="integer")
+     * @OA\Schema(type="integer")
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=200,
      *         description="Product details",
-     *         @OA\JsonContent(ref="#/components/schemas/Product")
+     * @OA\JsonContent(ref="#/components/schemas/Product")
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=404,
      *         description="Product not found"
      *     )
@@ -120,23 +122,23 @@ class ProductController extends Controller
      *     summary="Create a new product",
      *     tags={"Products"},
      *     security={{"bearerAuth":{}}},
-     *     @OA\RequestBody(
+     * @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(
+     * @OA\JsonContent(
      *             required={"name","description","price","category_id"},
-     *             @OA\Property(property="name", type="string", example="Product Name"),
-     *             @OA\Property(property="description", type="string", example="Product Description"),
-     *             @OA\Property(property="price", type="number", format="float", example=99.99),
-     *             @OA\Property(property="category_id", type="integer", example=1),
-     *             @OA\Property(property="stock", type="integer", example=100)
+     * @OA\Property(property="name",                       type="string", example="Product Name"),
+     * @OA\Property(property="description",                type="string", example="Product Description"),
+     * @OA\Property(property="price",                      type="number", format="float", example=99.99),
+     * @OA\Property(property="category_id",                type="integer", example=1),
+     * @OA\Property(property="stock",                      type="integer", example=100)
      *         )
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=201,
      *         description="Product created successfully",
-     *         @OA\JsonContent(ref="#/components/schemas/Product")
+     * @OA\JsonContent(ref="#/components/schemas/Product")
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=422,
      *         description="Validation error"
      *     )
@@ -154,32 +156,32 @@ class ProductController extends Controller
      *     summary="Update a product",
      *     tags={"Products"},
      *     security={{"bearerAuth":{}}},
-     *     @OA\Parameter(
+     * @OA\Parameter(
      *         name="id",
      *         in="path",
      *         required=true,
-     *         @OA\Schema(type="integer")
+     * @OA\Schema(type="integer")
      *     ),
-     *     @OA\RequestBody(
+     * @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(
-     *             @OA\Property(property="name", type="string", example="Updated Product Name"),
-     *             @OA\Property(property="description", type="string", example="Updated Description"),
-     *             @OA\Property(property="price", type="number", format="float", example=149.99),
-     *             @OA\Property(property="category_id", type="integer", example=1),
-     *             @OA\Property(property="stock", type="integer", example=50)
+     * @OA\JsonContent(
+     * @OA\Property(property="name",                       type="string", example="Updated Product Name"),
+     * @OA\Property(property="description",                type="string", example="Updated Description"),
+     * @OA\Property(property="price",                      type="number", format="float", example=149.99),
+     * @OA\Property(property="category_id",                type="integer", example=1),
+     * @OA\Property(property="stock",                      type="integer", example=50)
      *         )
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=200,
      *         description="Product updated successfully",
-     *         @OA\JsonContent(ref="#/components/schemas/Product")
+     * @OA\JsonContent(ref="#/components/schemas/Product")
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=404,
      *         description="Product not found"
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=422,
      *         description="Validation error"
      *     )
@@ -197,17 +199,17 @@ class ProductController extends Controller
      *     summary="Delete a product",
      *     tags={"Products"},
      *     security={{"bearerAuth":{}}},
-     *     @OA\Parameter(
+     * @OA\Parameter(
      *         name="id",
      *         in="path",
      *         required=true,
-     *         @OA\Schema(type="integer")
+     * @OA\Schema(type="integer")
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=204,
      *         description="Product deleted successfully"
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=404,
      *         description="Product not found"
      *     )

@@ -13,7 +13,7 @@ class InventoryService
     /**
      * Update stock for an order.
      *
-     * @param  \App\Models\Order  $order
+     * @param  \App\Models\Order $order
      * @return void
      */
     public function updateStockForOrder(Order $order)
@@ -36,10 +36,12 @@ class InventoryService
             Log::info('Stock updated for order', ['order_id' => $order->id]);
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Failed to update stock for order', [
+            Log::error(
+                'Failed to update stock for order', [
                 'order_id' => $order->id,
                 'error' => $e->getMessage()
-            ]);
+                ]
+            );
             throw $e;
         }
     }
@@ -47,7 +49,7 @@ class InventoryService
     /**
      * Restore stock for a cancelled order.
      *
-     * @param  \App\Models\Order  $order
+     * @param  \App\Models\Order $order
      * @return void
      */
     public function restoreStockForOrder(Order $order)
@@ -66,10 +68,12 @@ class InventoryService
             Log::info('Stock restored for cancelled order', ['order_id' => $order->id]);
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Failed to restore stock for cancelled order', [
+            Log::error(
+                'Failed to restore stock for cancelled order', [
                 'order_id' => $order->id,
                 'error' => $e->getMessage()
-            ]);
+                ]
+            );
             throw $e;
         }
     }
@@ -77,7 +81,7 @@ class InventoryService
     /**
      * Restore stock for a return request.
      *
-     * @param  \App\Models\ReturnRequest  $returnRequest
+     * @param  \App\Models\ReturnRequest $returnRequest
      * @return void
      */
     public function restoreStockForReturn(ReturnRequest $returnRequest)
@@ -93,15 +97,19 @@ class InventoryService
             }
 
             DB::commit();
-            Log::info('Stock restored for return request', [
+            Log::info(
+                'Stock restored for return request', [
                 'return_request_id' => $returnRequest->id
-            ]);
+                ]
+            );
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Failed to restore stock for return request', [
+            Log::error(
+                'Failed to restore stock for return request', [
                 'return_request_id' => $returnRequest->id,
                 'error' => $e->getMessage()
-            ]);
+                ]
+            );
             throw $e;
         }
     }
@@ -109,8 +117,8 @@ class InventoryService
     /**
      * Check if product has sufficient stock.
      *
-     * @param  \App\Models\Product  $product
-     * @param  int  $quantity
+     * @param  \App\Models\Product $product
+     * @param  int                 $quantity
      * @return bool
      */
     public function hasSufficientStock(Product $product, int $quantity): bool
@@ -121,7 +129,7 @@ class InventoryService
     /**
      * Get available stock for a product.
      *
-     * @param  \App\Models\Product  $product
+     * @param  \App\Models\Product $product
      * @return int
      */
     public function getAvailableStock(Product $product): int
@@ -132,23 +140,27 @@ class InventoryService
     /**
      * Update product stock.
      *
-     * @param  \App\Models\Product  $product
-     * @param  int  $quantity
+     * @param  \App\Models\Product $product
+     * @param  int                 $quantity
      * @return void
      */
     public function updateProductStock(Product $product, int $quantity)
     {
         try {
             $product->update(['stock' => $quantity]);
-            Log::info('Product stock updated', [
+            Log::info(
+                'Product stock updated', [
                 'product_id' => $product->id,
                 'new_stock' => $quantity
-            ]);
+                ]
+            );
         } catch (\Exception $e) {
-            Log::error('Failed to update product stock', [
+            Log::error(
+                'Failed to update product stock', [
                 'product_id' => $product->id,
                 'error' => $e->getMessage()
-            ]);
+                ]
+            );
             throw $e;
         }
     }

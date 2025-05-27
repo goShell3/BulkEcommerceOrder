@@ -13,7 +13,8 @@ class UserController extends Controller
 {
     public function __construct(
         private readonly UserService $userService
-    ) {}
+    ) {
+    }
 
     /**
      * Get the authenticated user's profile.
@@ -45,8 +46,10 @@ class UserController extends Controller
             $request->validated('password')
         );
 
-        return response()->json([
+        return response()->json(
+            [
             'message' => 'Password updated successfully'
-        ]);
+            ]
+        );
     }
 } 

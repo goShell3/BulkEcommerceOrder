@@ -18,7 +18,7 @@ class ProviderRepository
     /**
      * Create a new service repository instance.
      *
-     * @param  \Illuminate\Contracts\Foundation\Application  $app
+     * @param  \Illuminate\Contracts\Foundation\Application $app
      * @return void
      */
     public function __construct(Application $app)
@@ -41,7 +41,7 @@ class ProviderRepository
     /**
      * Register a service provider.
      *
-     * @param  string  $provider
+     * @param  string $provider
      * @return void
      */
     public function register(string $provider): void

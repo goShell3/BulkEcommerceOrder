@@ -11,7 +11,7 @@ class BaseController extends Controller
      * Success response method.
      *
      * @param  mixed  $result
-     * @param  string  $message
+     * @param  string $message
      * @return JsonResponse
      */
     public function sendResponse($result, string $message): JsonResponse
@@ -28,9 +28,9 @@ class BaseController extends Controller
     /**
      * Error response method.
      *
-     * @param  string  $error
+     * @param  string $error
      * @param  array  $errorMessages
-     * @param  int  $code
+     * @param  int    $code
      * @return JsonResponse
      */
     public function sendError(string $error, array $errorMessages = [], int $code = 404): JsonResponse

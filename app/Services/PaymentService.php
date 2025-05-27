@@ -16,7 +16,7 @@ class PaymentService
     /**
      * Process payment for an order.
      *
-     * @param  \App\Models\Order  $order
+     * @param  \App\Models\Order $order
      * @return void
      */
     public function processPayment(Order $order)
@@ -34,7 +34,8 @@ class PaymentService
             Stripe::setApiKey($gatewayConfig->secret_key);
 
             // Create payment intent
-            $paymentIntent = PaymentIntent::create([
+            $paymentIntent = PaymentIntent::create(
+                [
                 'amount' => $order->total * 100, // Convert to cents
                 'currency' => 'usd',
                 'payment_method' => $order->payment_method,
@@ -43,29 +44,36 @@ class PaymentService
                 'metadata' => [
                     'order_id' => $order->id
                 ]
-            ]);
+                ]
+            );
 
             // Create payment record
-            Payment::create([
+            Payment::create(
+                [
                 'order_id' => $order->id,
                 'payment_intent_id' => $paymentIntent->id,
                 'amount' => $order->total,
                 'currency' => 'usd',
                 'status' => $paymentIntent->status,
                 'payment_method' => $order->payment_method
-            ]);
+                ]
+            );
 
             DB::commit();
-            Log::info('Payment processed successfully', [
+            Log::info(
+                'Payment processed successfully', [
                 'order_id' => $order->id,
                 'payment_intent_id' => $paymentIntent->id
-            ]);
+                ]
+            );
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Failed to process payment', [
+            Log::error(
+                'Failed to process payment', [
                 'order_id' => $order->id,
                 'error' => $e->getMessage()
-            ]);
+                ]
+            );
             throw $e;
         }
     }
@@ -73,7 +81,7 @@ class PaymentService
     /**
      * Process refund for an order.
      *
-     * @param  \App\Models\Order  $order
+     * @param  \App\Models\Order $order
      * @return void
      */
     public function processRefund(Order $order)
@@ -97,28 +105,36 @@ class PaymentService
             }
 
             // Process refund
-            $refund = Refund::create([
+            $refund = Refund::create(
+                [
                 'payment_intent' => $payment->payment_intent_id,
                 'amount' => $order->total * 100 // Convert to cents
-            ]);
+                ]
+            );
 
             // Update payment status
-            $payment->update([
+            $payment->update(
+                [
                 'status' => 'refunded',
                 'refund_id' => $refund->id
-            ]);
+                ]
+            );
 
             DB::commit();
-            Log::info('Refund processed successfully', [
+            Log::info(
+                'Refund processed successfully', [
                 'order_id' => $order->id,
                 'refund_id' => $refund->id
-            ]);
+                ]
+            );
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Failed to process refund', [
+            Log::error(
+                'Failed to process refund', [
                 'order_id' => $order->id,
                 'error' => $e->getMessage()
-            ]);
+                ]
+            );
             throw $e;
         }
     }
@@ -126,7 +142,7 @@ class PaymentService
     /**
      * Get payment status.
      *
-     * @param  \App\Models\Order  $order
+     * @param  \App\Models\Order $order
      * @return string
      */
     public function getPaymentStatus(Order $order): string
@@ -138,7 +154,7 @@ class PaymentService
     /**
      * Verify payment.
      *
-     * @param  \App\Models\Order  $order
+     * @param  \App\Models\Order $order
      * @return bool
      */
     public function verifyPayment(Order $order): bool
@@ -163,10 +179,12 @@ class PaymentService
 
             return $paymentIntent->status === 'succeeded';
         } catch (\Exception $e) {
-            Log::error('Failed to verify payment', [
+            Log::error(
+                'Failed to verify payment', [
                 'order_id' => $order->id,
                 'error' => $e->getMessage()
-            ]);
+                ]
+            );
             return false;
         }
     }

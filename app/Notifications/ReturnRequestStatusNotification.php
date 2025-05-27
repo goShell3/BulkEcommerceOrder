@@ -29,8 +29,8 @@ class ReturnRequestStatusNotification extends Notification implements ShouldQueu
     /**
      * Create a new notification instance.
      *
-     * @param  \App\Models\ReturnRequest  $returnRequest
-     * @param  string|null  $previousStatus
+     * @param  \App\Models\ReturnRequest $returnRequest
+     * @param  string|null               $previousStatus
      * @return void
      */
     public function __construct(ReturnRequest $returnRequest, ?string $previousStatus = null)
@@ -42,7 +42,7 @@ class ReturnRequestStatusNotification extends Notification implements ShouldQueu
     /**
      * Get the notification's delivery channels.
      *
-     * @param  mixed  $notifiable
+     * @param  mixed $notifiable
      * @return array
      */
     public function via($notifiable): array
@@ -53,7 +53,7 @@ class ReturnRequestStatusNotification extends Notification implements ShouldQueu
     /**
      * Get the mail representation of the notification.
      *
-     * @param  mixed  $notifiable
+     * @param  mixed $notifiable
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
     public function toMail($notifiable): MailMessage
@@ -79,7 +79,7 @@ class ReturnRequestStatusNotification extends Notification implements ShouldQueu
     /**
      * Get the array representation of the notification.
      *
-     * @param  mixed  $notifiable
+     * @param  mixed $notifiable
      * @return array
      */
     public function toArray($notifiable): array

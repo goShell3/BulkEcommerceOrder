@@ -17,8 +17,12 @@ class ReturnRequestApiTest extends TestCase
         $this->withoutExceptionHandling();
     }
 
-    /** @test */
-    public function it_can_list_return_requests()
+    /**
+     * 
+     *
+     * @test 
+     */
+    public function itCanListReturnRequests()
     {
         // Create some test return requests
         $returnRequests = ReturnRequest::factory()->count(3)->create();
@@ -27,7 +31,8 @@ class ReturnRequestApiTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJsonCount(3, 'data')
-            ->assertJsonStructure([
+            ->assertJsonStructure(
+                [
                 'data' => [
                     '*' => [
                         'id',
@@ -46,11 +51,16 @@ class ReturnRequestApiTest extends TestCase
                         ]
                     ]
                 ]
-            ]);
+                ]
+            );
     }
 
-    /** @test */
-    public function it_can_create_a_return_request()
+    /**
+     * 
+     *
+     * @test 
+     */
+    public function itCanCreateAReturnRequest()
     {
         $order = Order::factory()->create();
         $returnData = [
@@ -63,7 +73,8 @@ class ReturnRequestApiTest extends TestCase
         $response = $this->postJson('/api/return-requests', $returnData);
 
         $response->assertStatus(201)
-            ->assertJsonStructure([
+            ->assertJsonStructure(
+                [
                 'data' => [
                     'id',
                     'order_id',
@@ -73,20 +84,26 @@ class ReturnRequestApiTest extends TestCase
                     'created_at',
                     'updated_at'
                 ]
-            ]);
+                ]
+            );
 
         $this->assertDatabaseHas('return_requests', $returnData);
     }
 
-    /** @test */
-    public function it_can_show_a_return_request()
+    /**
+     * 
+     *
+     * @test 
+     */
+    public function itCanShowAReturnRequest()
     {
         $returnRequest = ReturnRequest::factory()->create();
 
         $response = $this->getJson("/api/return-requests/{$returnRequest->id}");
 
         $response->assertStatus(200)
-            ->assertJsonStructure([
+            ->assertJsonStructure(
+                [
                 'data' => [
                     'id',
                     'order_id',
@@ -97,11 +114,16 @@ class ReturnRequestApiTest extends TestCase
                     'updated_at',
                     'order'
                 ]
-            ]);
+                ]
+            );
     }
 
-    /** @test */
-    public function it_can_update_a_return_request()
+    /**
+     * 
+     *
+     * @test 
+     */
+    public function itCanUpdateAReturnRequest()
     {
         $returnRequest = ReturnRequest::factory()->create();
         $updateData = [
@@ -117,8 +139,12 @@ class ReturnRequestApiTest extends TestCase
         $this->assertDatabaseHas('return_requests', $updateData);
     }
 
-    /** @test */
-    public function it_can_delete_a_return_request()
+    /**
+     * 
+     *
+     * @test 
+     */
+    public function itCanDeleteAReturnRequest()
     {
         $returnRequest = ReturnRequest::factory()->create();
 
@@ -128,8 +154,12 @@ class ReturnRequestApiTest extends TestCase
         $this->assertDatabaseMissing('return_requests', ['id' => $returnRequest->id]);
     }
 
-    /** @test */
-    public function it_validates_required_fields_when_creating_return_request()
+    /**
+     * 
+     *
+     * @test 
+     */
+    public function itValidatesRequiredFieldsWhenCreatingReturnRequest()
     {
         $response = $this->postJson('/api/return-requests', []);
 
@@ -137,8 +167,12 @@ class ReturnRequestApiTest extends TestCase
             ->assertJsonValidationErrors(['order_id', 'status', 'reason']);
     }
 
-    /** @test */
-    public function it_validates_order_exists_when_creating_return_request()
+    /**
+     * 
+     *
+     * @test 
+     */
+    public function itValidatesOrderExistsWhenCreatingReturnRequest()
     {
         $returnData = [
             'order_id' => 99999, // Non-existent order ID
@@ -152,13 +186,19 @@ class ReturnRequestApiTest extends TestCase
             ->assertJsonValidationErrors(['order_id']);
     }
 
-    /** @test */
-    public function it_validates_urgent_return_for_high_value_orders()
+    /**
+     * 
+     *
+     * @test 
+     */
+    public function itValidatesUrgentReturnForHighValueOrders()
     {
         // Create a high value order
-        $order = Order::factory()->create([
+        $order = Order::factory()->create(
+            [
             'total' => 1000.00
-        ]);
+            ]
+        );
 
         $returnData = [
             'order_id' => $order->id,

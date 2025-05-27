@@ -32,8 +32,8 @@ class OrderStatusUpdated implements ShouldBroadcast
     /**
      * Create a new event instance.
      *
-     * @param  \App\Models\Order  $order
-     * @param  string  $previousStatus
+     * @param  \App\Models\Order $order
+     * @param  string            $previousStatus
      * @return void
      */
     public function __construct(Order $order, string $previousStatus)

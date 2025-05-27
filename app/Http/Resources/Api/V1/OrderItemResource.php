@@ -10,15 +10,15 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *     schema="OrderItem",
  *     title="OrderItem",
  *     description="Order item model",
- *     @OA\Property(property="id", type="integer", example=1),
- *     @OA\Property(property="order_id", type="integer", example=1),
- *     @OA\Property(property="product_id", type="integer", example=1),
- *     @OA\Property(property="quantity", type="integer", example=2),
- *     @OA\Property(property="price", type="number", format="float", example=49.99),
- *     @OA\Property(property="subtotal", type="number", format="float", example=99.98),
- *     @OA\Property(property="created_at", type="string", format="date-time"),
- *     @OA\Property(property="updated_at", type="string", format="date-time"),
- *     @OA\Property(
+ * @OA\Property(property="id",         type="integer", example=1),
+ * @OA\Property(property="order_id",   type="integer", example=1),
+ * @OA\Property(property="product_id", type="integer", example=1),
+ * @OA\Property(property="quantity",   type="integer", example=2),
+ * @OA\Property(property="price",      type="number", format="float", example=49.99),
+ * @OA\Property(property="subtotal",   type="number", format="float", example=99.98),
+ * @OA\Property(property="created_at", type="string", format="date-time"),
+ * @OA\Property(property="updated_at", type="string", format="date-time"),
+ * @OA\Property(
  *         property="product",
  *         ref="#/components/schemas/Product"
  *     )

@@ -12,7 +12,7 @@ class ShippingService
     /**
      * Generate tracking number for an order.
      *
-     * @param  \App\Models\Order  $order
+     * @param  \App\Models\Order $order
      * @return string
      */
     public function generateTrackingNumber(Order $order): string
@@ -29,17 +29,21 @@ class ShippingService
             // Update order with tracking number
             $order->update(['tracking_number' => $trackingNumber]);
 
-            Log::info('Tracking number generated', [
+            Log::info(
+                'Tracking number generated', [
                 'order_id' => $order->id,
                 'tracking_number' => $trackingNumber
-            ]);
+                ]
+            );
 
             return $trackingNumber;
         } catch (\Exception $e) {
-            Log::error('Failed to generate tracking number', [
+            Log::error(
+                'Failed to generate tracking number', [
                 'order_id' => $order->id,
                 'error' => $e->getMessage()
-            ]);
+                ]
+            );
             throw $e;
         }
     }
@@ -47,7 +51,7 @@ class ShippingService
     /**
      * Calculate shipping cost for an order.
      *
-     * @param  \App\Models\Order  $order
+     * @param  \App\Models\Order $order
      * @return float
      */
     public function calculateShippingCost(Order $order): float
@@ -64,17 +68,21 @@ class ShippingService
 
             $totalCost = $baseCost + $weightCost + $distanceCost;
 
-            Log::info('Shipping cost calculated', [
+            Log::info(
+                'Shipping cost calculated', [
                 'order_id' => $order->id,
                 'shipping_cost' => $totalCost
-            ]);
+                ]
+            );
 
             return $totalCost;
         } catch (\Exception $e) {
-            Log::error('Failed to calculate shipping cost', [
+            Log::error(
+                'Failed to calculate shipping cost', [
                 'order_id' => $order->id,
                 'error' => $e->getMessage()
-            ]);
+                ]
+            );
             throw $e;
         }
     }
@@ -82,8 +90,8 @@ class ShippingService
     /**
      * Calculate weight-based shipping cost.
      *
-     * @param  \App\Models\Order  $order
-     * @param  \App\Models\ShippingMethod  $shippingMethod
+     * @param  \App\Models\Order          $order
+     * @param  \App\Models\ShippingMethod $shippingMethod
      * @return float
      */
     protected function calculateWeightCost(Order $order, ShippingMethod $shippingMethod): float
@@ -99,8 +107,8 @@ class ShippingService
     /**
      * Calculate distance-based shipping cost.
      *
-     * @param  \App\Models\Order  $order
-     * @param  \App\Models\ShippingMethod  $shippingMethod
+     * @param  \App\Models\Order          $order
+     * @param  \App\Models\ShippingMethod $shippingMethod
      * @return float
      */
     protected function calculateDistanceCost(Order $order, ShippingMethod $shippingMethod): float
@@ -114,8 +122,8 @@ class ShippingService
     /**
      * Format tracking number based on carrier format.
      *
-     * @param  \App\Models\ShippingCarrier  $carrier
-     * @param  \App\Models\Order  $order
+     * @param  \App\Models\ShippingCarrier $carrier
+     * @param  \App\Models\Order           $order
      * @return string
      */
     protected function formatTrackingNumber(ShippingCarrier $carrier, Order $order): string
@@ -130,7 +138,7 @@ class ShippingService
     /**
      * Get available shipping methods for an order.
      *
-     * @param  \App\Models\Order  $order
+     * @param  \App\Models\Order $order
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getAvailableShippingMethods(Order $order)
@@ -143,7 +151,7 @@ class ShippingService
     /**
      * Get shipping carrier by ID.
      *
-     * @param  int  $carrierId
+     * @param  int $carrierId
      * @return \App\Models\ShippingCarrier|null
      */
     public function getShippingCarrier(int $carrierId)

@@ -18,8 +18,12 @@ class OrderApiTest extends TestCase
         $this->withoutExceptionHandling();
     }
 
-    /** @test */
-    public function it_can_list_orders()
+    /**
+     * 
+     *
+     * @test 
+     */
+    public function itCanListOrders()
     {
         // Create some test orders
         $orders = Order::factory()->count(3)->create();
@@ -28,7 +32,8 @@ class OrderApiTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJsonCount(3, 'data')
-            ->assertJsonStructure([
+            ->assertJsonStructure(
+                [
                 'data' => [
                     '*' => [
                         'id',
@@ -40,11 +45,16 @@ class OrderApiTest extends TestCase
                         'updated_at'
                     ]
                 ]
-            ]);
+                ]
+            );
     }
 
-    /** @test */
-    public function it_can_create_an_order()
+    /**
+     * 
+     *
+     * @test 
+     */
+    public function itCanCreateAnOrder()
     {
         $orderData = [
             'order_number' => 'ORD-123456',
@@ -56,7 +66,8 @@ class OrderApiTest extends TestCase
         $response = $this->postJson('/api/orders', $orderData);
 
         $response->assertStatus(201)
-            ->assertJsonStructure([
+            ->assertJsonStructure(
+                [
                 'data' => [
                     'id',
                     'order_number',
@@ -66,20 +77,26 @@ class OrderApiTest extends TestCase
                     'created_at',
                     'updated_at'
                 ]
-            ]);
+                ]
+            );
 
         $this->assertDatabaseHas('orders', $orderData);
     }
 
-    /** @test */
-    public function it_can_show_an_order()
+    /**
+     * 
+     *
+     * @test 
+     */
+    public function itCanShowAnOrder()
     {
         $order = Order::factory()->create();
 
         $response = $this->getJson("/api/orders/{$order->id}");
 
         $response->assertStatus(200)
-            ->assertJsonStructure([
+            ->assertJsonStructure(
+                [
                 'data' => [
                     'id',
                     'order_number',
@@ -89,11 +106,16 @@ class OrderApiTest extends TestCase
                     'created_at',
                     'updated_at'
                 ]
-            ]);
+                ]
+            );
     }
 
-    /** @test */
-    public function it_can_update_an_order()
+    /**
+     * 
+     *
+     * @test 
+     */
+    public function itCanUpdateAnOrder()
     {
         $order = Order::factory()->create();
         $updateData = [
@@ -109,8 +131,12 @@ class OrderApiTest extends TestCase
         $this->assertDatabaseHas('orders', $updateData);
     }
 
-    /** @test */
-    public function it_can_delete_an_order()
+    /**
+     * 
+     *
+     * @test 
+     */
+    public function itCanDeleteAnOrder()
     {
         $order = Order::factory()->create();
 
@@ -120,8 +146,12 @@ class OrderApiTest extends TestCase
         $this->assertDatabaseMissing('orders', ['id' => $order->id]);
     }
 
-    /** @test */
-    public function it_validates_required_fields_when_creating_order()
+    /**
+     * 
+     *
+     * @test 
+     */
+    public function itValidatesRequiredFieldsWhenCreatingOrder()
     {
         $response = $this->postJson('/api/orders', []);
 
@@ -129,8 +159,12 @@ class OrderApiTest extends TestCase
             ->assertJsonValidationErrors(['order_number', 'status', 'total', 'location']);
     }
 
-    /** @test */
-    public function it_validates_numeric_total_field()
+    /**
+     * 
+     *
+     * @test 
+     */
+    public function itValidatesNumericTotalField()
     {
         $orderData = [
             'order_number' => 'ORD-123456',

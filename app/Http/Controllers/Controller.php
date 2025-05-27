@@ -11,7 +11,7 @@ use Illuminate\Routing\Controller as BaseController;
  *     version="1.0.0",
  *     title="E-commerce API Documentation",
  *     description="API documentation for the E-commerce application",
- *     @OA\Contact(
+ * @OA\Contact(
  *         email="admin@example.com"
  *     )
  * )

@@ -39,9 +39,9 @@ class OrderShipped implements ShouldBroadcast
     /**
      * Create a new event instance.
      *
-     * @param  \App\Models\Order  $order
-     * @param  string  $trackingNumber
-     * @param  string  $carrier
+     * @param  \App\Models\Order $order
+     * @param  string            $trackingNumber
+     * @param  string            $carrier
      * @return void
      */
     public function __construct(Order $order, string $trackingNumber, string $carrier)

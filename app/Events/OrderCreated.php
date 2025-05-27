@@ -25,7 +25,7 @@ class OrderCreated implements ShouldBroadcast
     /**
      * Create a new event instance.
      *
-     * @param  \App\Models\Order  $order
+     * @param  \App\Models\Order $order
      * @return void
      */
     public function __construct(Order $order)

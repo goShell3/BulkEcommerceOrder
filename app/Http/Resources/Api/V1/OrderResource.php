@@ -10,19 +10,19 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *     schema="Order",
  *     title="Order",
  *     description="Order model",
- *     @OA\Property(property="id", type="integer", example=1),
- *     @OA\Property(property="user_id", type="integer", example=1),
- *     @OA\Property(property="status", type="string", example="pending"),
- *     @OA\Property(property="total", type="number", format="float", example=99.99),
- *     @OA\Property(property="shipping_address", type="object"),
- *     @OA\Property(property="created_at", type="string", format="date-time"),
- *     @OA\Property(property="updated_at", type="string", format="date-time"),
- *     @OA\Property(
+ * @OA\Property(property="id",                     type="integer", example=1),
+ * @OA\Property(property="user_id",                type="integer", example=1),
+ * @OA\Property(property="status",                 type="string", example="pending"),
+ * @OA\Property(property="total",                  type="number", format="float", example=99.99),
+ * @OA\Property(property="shipping_address",       type="object"),
+ * @OA\Property(property="created_at",             type="string", format="date-time"),
+ * @OA\Property(property="updated_at",             type="string", format="date-time"),
+ * @OA\Property(
  *         property="items",
  *         type="array",
- *         @OA\Items(ref="#/components/schemas/OrderItem")
+ * @OA\Items(ref="#/components/schemas/OrderItem")
  *     ),
- *     @OA\Property(
+ * @OA\Property(
  *         property="user",
  *         ref="#/components/schemas/User"
  *     )

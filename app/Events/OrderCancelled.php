@@ -32,8 +32,8 @@ class OrderCancelled implements ShouldBroadcast
     /**
      * Create a new event instance.
      *
-     * @param  \App\Models\Order  $order
-     * @param  string|null  $reason
+     * @param  \App\Models\Order $order
+     * @param  string|null       $reason
      * @return void
      */
     public function __construct(Order $order, ?string $reason = null)

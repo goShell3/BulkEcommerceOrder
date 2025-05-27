@@ -29,34 +29,34 @@ class ReturnRequestController extends Controller
      *     summary="Get all return requests",
      *     tags={"ReturnRequests"},
      *     security={{"bearerAuth":{}}},
-     *     @OA\Parameter(
+     * @OA\Parameter(
      *         name="status",
      *         in="query",
      *         description="Filter by return request status",
      *         required=false,
-     *         @OA\Schema(type="string", enum={"pending", "approved", "rejected", "completed"})
+     * @OA\Schema(type="string",     enum={"pending", "approved", "rejected", "completed"})
      *     ),
-     *     @OA\Parameter(
+     * @OA\Parameter(
      *         name="sort",
      *         in="query",
      *         description="Sort field (created_at)",
      *         required=false,
-     *         @OA\Schema(type="string")
+     * @OA\Schema(type="string")
      *     ),
-     *     @OA\Parameter(
+     * @OA\Parameter(
      *         name="order",
      *         in="query",
      *         description="Sort order (asc, desc)",
      *         required=false,
-     *         @OA\Schema(type="string")
+     * @OA\Schema(type="string")
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=200,
      *         description="List of return requests",
-     *         @OA\JsonContent(
+     * @OA\JsonContent(
      *             type="object",
-     *             @OA\Property(property="data", type="array", @OA\Items(ref="#/components/schemas/ReturnRequest")),
-     *             @OA\Property(property="meta", type="object", @OA\Property(property="total", type="integer"))
+     * @OA\Property(property="data", type="array", @OA\Items(ref="#/components/schemas/ReturnRequest")),
+     * @OA\Property(property="meta", type="object", @OA\Property(property="total", type="integer"))
      *         )
      *     )
      * )
@@ -84,18 +84,18 @@ class ReturnRequestController extends Controller
      *     summary="Get return request details",
      *     tags={"ReturnRequests"},
      *     security={{"bearerAuth":{}}},
-     *     @OA\Parameter(
+     * @OA\Parameter(
      *         name="id",
      *         in="path",
      *         required=true,
-     *         @OA\Schema(type="integer")
+     * @OA\Schema(type="integer")
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=200,
      *         description="Return request details",
-     *         @OA\JsonContent(ref="#/components/schemas/ReturnRequest")
+     * @OA\JsonContent(ref="#/components/schemas/ReturnRequest")
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=404,
      *         description="Return request not found"
      *     )
@@ -112,21 +112,21 @@ class ReturnRequestController extends Controller
      *     summary="Create a new return request",
      *     tags={"ReturnRequests"},
      *     security={{"bearerAuth":{}}},
-     *     @OA\RequestBody(
+     * @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(
+     * @OA\JsonContent(
      *             required={"order_id", "reason"},
-     *             @OA\Property(property="order_id", type="integer", example=1),
-     *             @OA\Property(property="reason", type="string", example="Product damaged"),
-     *             @OA\Property(property="description", type="string", example="The product arrived with visible damage")
+     * @OA\Property(property="order_id",                         type="integer", example=1),
+     * @OA\Property(property="reason",                           type="string", example="Product damaged"),
+     * @OA\Property(property="description",                      type="string", example="The product arrived with visible damage")
      *         )
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=201,
      *         description="Return request created successfully",
-     *         @OA\JsonContent(ref="#/components/schemas/ReturnRequest")
+     * @OA\JsonContent(ref="#/components/schemas/ReturnRequest")
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=422,
      *         description="Validation error"
      *     )
@@ -134,12 +134,14 @@ class ReturnRequestController extends Controller
      */
     public function store(StoreReturnRequestRequest $request): ReturnRequestResource
     {
-        $returnRequest = ReturnRequest::create([
+        $returnRequest = ReturnRequest::create(
+            [
             'order_id' => $request->order_id,
             'reason' => $request->reason,
             'description' => $request->description,
             'status' => 'pending'
-        ]);
+            ]
+        );
 
         return new ReturnRequestResource($returnRequest->load(['order', 'order.items.product']));
     }
@@ -150,17 +152,17 @@ class ReturnRequestController extends Controller
      *     summary="Update return request status",
      *     tags={"ReturnRequests"},
      *     security={{"bearerAuth":{}}},
-     *     @OA\Parameter(
+     * @OA\Parameter(
      *         name="id",
      *         in="path",
      *         required=true,
-     *         @OA\Schema(type="integer")
+     * @OA\Schema(type="integer")
      *     ),
-     *     @OA\RequestBody(
+     * @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(
+     * @OA\JsonContent(
      *             required={"status"},
-     *             @OA\Property(
+     * @OA\Property(
      *                 property="status",
      *                 type="string",
      *                 enum={"approved", "rejected", "completed"},
@@ -168,16 +170,16 @@ class ReturnRequestController extends Controller
      *             )
      *         )
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=200,
      *         description="Return request status updated successfully",
-     *         @OA\JsonContent(ref="#/components/schemas/ReturnRequest")
+     * @OA\JsonContent(ref="#/components/schemas/ReturnRequest")
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=404,
      *         description="Return request not found"
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=422,
      *         description="Validation error"
      *     )
@@ -192,7 +194,7 @@ class ReturnRequestController extends Controller
     /**
      * Process refund for approved return request.
      *
-     * @param  ReturnRequest  $returnRequest
+     * @param  ReturnRequest $returnRequest
      * @return void
      */
     private function processRefund(ReturnRequest $returnRequest): void
@@ -205,7 +207,7 @@ class ReturnRequestController extends Controller
     /**
      * Process replacement for approved return request.
      *
-     * @param  ReturnRequest  $returnRequest
+     * @param  ReturnRequest $returnRequest
      * @return void
      */
     private function processReplacement(ReturnRequest $returnRequest): void

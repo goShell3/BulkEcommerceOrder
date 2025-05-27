@@ -29,23 +29,23 @@ class AuthController extends Controller
      *     path="/api/v1/login",
      *     summary="Login user and create token",
      *     tags={"Authentication"},
-     *     @OA\RequestBody(
+     * @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(
+     * @OA\JsonContent(
      *             required={"email","password"},
-     *             @OA\Property(property="email", type="string", format="email", example="user@example.com"),
-     *             @OA\Property(property="password", type="string", format="password", example="password123")
+     * @OA\Property(property="email",    type="string", format="email", example="user@example.com"),
+     * @OA\Property(property="password", type="string", format="password", example="password123")
      *         )
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=200,
      *         description="Successful login",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="token", type="string", example="1|abcdef123456"),
-     *             @OA\Property(property="user", ref="#/components/schemas/User")
+     * @OA\JsonContent(
+     * @OA\Property(property="token",    type="string", example="1|abcdef123456"),
+     * @OA\Property(property="user",     ref="#/components/schemas/User")
      *         )
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=422,
      *         description="Validation error"
      *     )
@@ -56,17 +56,21 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
-            throw ValidationException::withMessages([
+            throw ValidationException::withMessages(
+                [
                 'email' => ['The provided credentials are incorrect.'],
-            ]);
+                ]
+            );
         }
 
         $token = $user->createToken('api-token')->plainTextToken;
 
-        return response()->json([
+        return response()->json(
+            [
             'token' => $token,
             'user' => new UserResource($user)
-        ]);
+            ]
+        );
     }
 
     /**
@@ -74,25 +78,25 @@ class AuthController extends Controller
      *     path="/api/v1/register",
      *     summary="Register a new user",
      *     tags={"Authentication"},
-     *     @OA\RequestBody(
+     * @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(
+     * @OA\JsonContent(
      *             required={"name","email","password","password_confirmation"},
-     *             @OA\Property(property="name", type="string", example="John Doe"),
-     *             @OA\Property(property="email", type="string", format="email", example="user@example.com"),
-     *             @OA\Property(property="password", type="string", format="password", example="password123"),
-     *             @OA\Property(property="password_confirmation", type="string", format="password", example="password123")
+     * @OA\Property(property="name",                  type="string", example="John Doe"),
+     * @OA\Property(property="email",                 type="string", format="email", example="user@example.com"),
+     * @OA\Property(property="password",              type="string", format="password", example="password123"),
+     * @OA\Property(property="password_confirmation", type="string", format="password", example="password123")
      *         )
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=201,
      *         description="User registered successfully",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="token", type="string", example="1|abcdef123456"),
-     *             @OA\Property(property="user", ref="#/components/schemas/User")
+     * @OA\JsonContent(
+     * @OA\Property(property="token",                 type="string", example="1|abcdef123456"),
+     * @OA\Property(property="user",                  ref="#/components/schemas/User")
      *         )
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=422,
      *         description="Validation error"
      *     )
@@ -100,18 +104,22 @@ class AuthController extends Controller
      */
     public function register(RegisterRequest $request): JsonResponse
     {
-        $user = User::create([
+        $user = User::create(
+            [
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-        ]);
+            ]
+        );
 
         $token = $user->createToken('api-token')->plainTextToken;
 
-        return response()->json([
+        return response()->json(
+            [
             'token' => $token,
             'user' => new UserResource($user)
-        ], 201);
+            ], 201
+        );
     }
 
     /**
@@ -119,18 +127,18 @@ class AuthController extends Controller
      *     path="/api/v1/forgot-password",
      *     summary="Send password reset link",
      *     tags={"Authentication"},
-     *     @OA\RequestBody(
+     * @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(
+     * @OA\JsonContent(
      *             required={"email"},
-     *             @OA\Property(property="email", type="string", format="email", example="user@example.com")
+     * @OA\Property(property="email", type="string", format="email", example="user@example.com")
      *         )
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=200,
      *         description="Reset link sent successfully"
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=422,
      *         description="Validation error"
      *     )
@@ -152,21 +160,21 @@ class AuthController extends Controller
      *     path="/api/v1/reset-password",
      *     summary="Reset password",
      *     tags={"Authentication"},
-     *     @OA\RequestBody(
+     * @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(
+     * @OA\JsonContent(
      *             required={"token","email","password","password_confirmation"},
-     *             @OA\Property(property="token", type="string", example="reset-token"),
-     *             @OA\Property(property="email", type="string", format="email", example="user@example.com"),
-     *             @OA\Property(property="password", type="string", format="password", example="newpassword123"),
-     *             @OA\Property(property="password_confirmation", type="string", format="password", example="newpassword123")
+     * @OA\Property(property="token",                 type="string", example="reset-token"),
+     * @OA\Property(property="email",                 type="string", format="email", example="user@example.com"),
+     * @OA\Property(property="password",              type="string", format="password", example="newpassword123"),
+     * @OA\Property(property="password_confirmation", type="string", format="password", example="newpassword123")
      *         )
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=200,
      *         description="Password reset successfully"
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=422,
      *         description="Validation error"
      *     )
@@ -190,7 +198,7 @@ class AuthController extends Controller
     /**
      * Logout user (Revoke the token).
      *
-     * @param  Request  $request
+     * @param  Request $request
      * @return JsonResponse
      */
     public function logout(Request $request): JsonResponse
@@ -203,7 +211,7 @@ class AuthController extends Controller
     /**
      * Get the authenticated User.
      *
-     * @param  Request  $request
+     * @param  Request $request
      * @return JsonResponse
      */
     public function user(Request $request): JsonResponse

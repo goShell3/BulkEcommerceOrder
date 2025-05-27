@@ -25,7 +25,7 @@ class ReturnRequestCreated implements ShouldBroadcast
     /**
      * Create a new event instance.
      *
-     * @param  \App\Models\ReturnRequest  $returnRequest
+     * @param  \App\Models\ReturnRequest $returnRequest
      * @return void
      */
     public function __construct(ReturnRequest $returnRequest)

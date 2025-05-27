@@ -32,8 +32,8 @@ class ReturnRequestStatusUpdated implements ShouldBroadcast
     /**
      * Create a new event instance.
      *
-     * @param  \App\Models\ReturnRequest  $returnRequest
-     * @param  string  $previousStatus
+     * @param  \App\Models\ReturnRequest $returnRequest
+     * @param  string                    $previousStatus
      * @return void
      */
     public function __construct(ReturnRequest $returnRequest, string $previousStatus)

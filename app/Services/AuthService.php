@@ -11,8 +11,8 @@ class AuthService
     /**
      * Attempt to log in a user.
      *
-     * @param string $email
-     * @param string $password
+     * @param  string $email
+     * @param  string $password
      * @return array{success: bool, message: string, data?: array}
      */
     public function login(string $email, string $password): array

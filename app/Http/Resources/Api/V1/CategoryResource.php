@@ -10,17 +10,17 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *     schema="Category",
  *     title="Category",
  *     description="Category model",
- *     @OA\Property(property="id", type="integer", example=1),
- *     @OA\Property(property="name", type="string", example="Electronics"),
- *     @OA\Property(property="description", type="string", example="Electronic devices and accessories"),
- *     @OA\Property(property="parent_id", type="integer", nullable=true, example=null),
- *     @OA\Property(property="status", type="string", example="active"),
- *     @OA\Property(property="created_at", type="string", format="date-time"),
- *     @OA\Property(property="updated_at", type="string", format="date-time"),
- *     @OA\Property(
+ * @OA\Property(property="id",                    type="integer", example=1),
+ * @OA\Property(property="name",                  type="string", example="Electronics"),
+ * @OA\Property(property="description",           type="string", example="Electronic devices and accessories"),
+ * @OA\Property(property="parent_id",             type="integer", nullable=true, example=null),
+ * @OA\Property(property="status",                type="string", example="active"),
+ * @OA\Property(property="created_at",            type="string", format="date-time"),
+ * @OA\Property(property="updated_at",            type="string", format="date-time"),
+ * @OA\Property(
  *         property="children",
  *         type="array",
- *         @OA\Items(ref="#/components/schemas/Category")
+ * @OA\Items(ref="#/components/schemas/Category")
  *     )
  * )
  */

@@ -39,9 +39,9 @@ class OrderRefunded implements ShouldBroadcast
     /**
      * Create a new event instance.
      *
-     * @param  \App\Models\Order  $order
-     * @param  float  $amount
-     * @param  string|null  $reason
+     * @param  \App\Models\Order $order
+     * @param  float             $amount
+     * @param  string|null       $reason
      * @return void
      */
     public function __construct(Order $order, float $amount, ?string $reason = null)

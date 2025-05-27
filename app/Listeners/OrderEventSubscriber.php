@@ -48,10 +48,10 @@ class OrderEventSubscriber
     /**
      * Create the event listener.
      *
-     * @param  \App\Services\NotificationService  $notificationService
-     * @param  \App\Services\InventoryService  $inventoryService
-     * @param  \App\Services\PaymentService  $paymentService
-     * @param  \App\Services\ShippingService  $shippingService
+     * @param  \App\Services\NotificationService $notificationService
+     * @param  \App\Services\InventoryService    $inventoryService
+     * @param  \App\Services\PaymentService      $paymentService
+     * @param  \App\Services\ShippingService     $shippingService
      * @return void
      */
     public function __construct(
@@ -69,7 +69,7 @@ class OrderEventSubscriber
     /**
      * Handle order created events.
      *
-     * @param  \App\Events\OrderCreated  $event
+     * @param  \App\Events\OrderCreated $event
      * @return void
      */
     public function handleOrderCreated(OrderCreated $event)
@@ -86,17 +86,19 @@ class OrderEventSubscriber
 
             Log::info('Order created successfully', ['order_id' => $event->order->id]);
         } catch (\Exception $e) {
-            Log::error('Error handling order created event', [
+            Log::error(
+                'Error handling order created event', [
                 'order_id' => $event->order->id,
                 'error' => $e->getMessage()
-            ]);
+                ]
+            );
         }
     }
 
     /**
      * Handle order status updated events.
      *
-     * @param  \App\Events\OrderStatusUpdated  $event
+     * @param  \App\Events\OrderStatusUpdated $event
      * @return void
      */
     public function handleOrderStatusUpdated(OrderStatusUpdated $event)
@@ -107,39 +109,43 @@ class OrderEventSubscriber
 
             // Handle specific status updates
             switch ($event->order->status) {
-                case 'processing':
-                    $this->handleProcessingStatus($event->order);
-                    break;
-                case 'shipped':
-                    $this->handleShippedStatus($event->order);
-                    break;
-                case 'delivered':
-                    $this->handleDeliveredStatus($event->order);
-                    break;
-                case 'cancelled':
-                    $this->handleCancelledStatus($event->order);
-                    break;
-                case 'refunded':
-                    $this->handleRefundedStatus($event->order);
-                    break;
+            case 'processing':
+                $this->handleProcessingStatus($event->order);
+                break;
+            case 'shipped':
+                $this->handleShippedStatus($event->order);
+                break;
+            case 'delivered':
+                $this->handleDeliveredStatus($event->order);
+                break;
+            case 'cancelled':
+                $this->handleCancelledStatus($event->order);
+                break;
+            case 'refunded':
+                $this->handleRefundedStatus($event->order);
+                break;
             }
 
-            Log::info('Order status updated', [
+            Log::info(
+                'Order status updated', [
                 'order_id' => $event->order->id,
                 'status' => $event->order->status
-            ]);
+                ]
+            );
         } catch (\Exception $e) {
-            Log::error('Error handling order status update', [
+            Log::error(
+                'Error handling order status update', [
                 'order_id' => $event->order->id,
                 'error' => $e->getMessage()
-            ]);
+                ]
+            );
         }
     }
 
     /**
      * Handle processing status.
      *
-     * @param  \App\Models\Order  $order
+     * @param  \App\Models\Order $order
      * @return void
      */
     protected function handleProcessingStatus($order)
@@ -150,7 +156,7 @@ class OrderEventSubscriber
     /**
      * Handle shipped status.
      *
-     * @param  \App\Models\Order  $order
+     * @param  \App\Models\Order $order
      * @return void
      */
     protected function handleShippedStatus($order)
@@ -162,7 +168,7 @@ class OrderEventSubscriber
     /**
      * Handle delivered status.
      *
-     * @param  \App\Models\Order  $order
+     * @param  \App\Models\Order $order
      * @return void
      */
     protected function handleDeliveredStatus($order)
@@ -173,7 +179,7 @@ class OrderEventSubscriber
     /**
      * Handle cancelled status.
      *
-     * @param  \App\Models\Order  $order
+     * @param  \App\Models\Order $order
      * @return void
      */
     protected function handleCancelledStatus($order)
@@ -186,7 +192,7 @@ class OrderEventSubscriber
     /**
      * Handle refunded status.
      *
-     * @param  \App\Models\Order  $order
+     * @param  \App\Models\Order $order
      * @return void
      */
     protected function handleRefundedStatus($order)
@@ -198,7 +204,7 @@ class OrderEventSubscriber
     /**
      * Register the listeners for the subscriber.
      *
-     * @param  \Illuminate\Events\Dispatcher  $events
+     * @param  \Illuminate\Events\Dispatcher $events
      * @return void
      */
     public function subscribe(Dispatcher $events)
