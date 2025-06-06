@@ -39,7 +39,7 @@ Route::get('/test', function () {
 Route::prefix('v1')->group(function () {
     // Public routes
     Route::post('login', [AuthController::class, 'login'])->name('api.login');
-    Route::post('register', [AuthController::class, 'register'])->name('api.register');
+    Route::post('/register', [AuthController::class, 'register'])->name('api.register');
     Route::post('forgot-password', [AuthController::class, 'forgotPassword'])->name('api.password.forgot');
     Route::post('reset-password', [AuthController::class, 'resetPassword'])->name('api.password.reset');
 
