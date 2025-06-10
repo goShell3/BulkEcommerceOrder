@@ -10,8 +10,8 @@ use Illuminate\Routing\Controller as BaseController;
  * @OA\Info(
  *     version="1.0.0",
  *     title="E-commerce API Documentation",
- *     description="API documentation for the E-commerce application",
- * @OA\Contact(
+ *     description="API documentation for the E-commerce platform",
+ *     @OA\Contact(
  *         email="admin@example.com"
  *     )
  * )

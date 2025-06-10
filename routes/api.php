@@ -37,9 +37,10 @@ Route::get('/test', function () {
 
 // API Version 1 Routes
 Route::prefix('v1')->group(function () {
+
     // Public routes
     Route::post('login', [AuthController::class, 'login'])->name('api.login');
-    Route::post('/register', [AuthController::class, 'register'])->name('api.register');
+    Route::post('register', [AuthController::class, 'register'])->name('api.register');
     Route::post('forgot-password', [AuthController::class, 'forgotPassword'])->name('api.password.forgot');
     Route::post('reset-password', [AuthController::class, 'resetPassword'])->name('api.password.reset');
 
@@ -53,19 +54,18 @@ Route::prefix('v1')->group(function () {
 
     // Protected routes
     Route::middleware('auth:sanctum')->group(function () {
+        // Auth routes
+        Route::post('refresh', [AuthController::class, 'refresh'])->name('api.refresh');
+        Route::post('logout', [AuthController::class, 'logout'])->name('api.logout');
+        Route::get('me', [AuthController::class, 'me'])->name('api.me');
+
         // User profile
         Route::get('user', [UserController::class, 'profile'])->name('api.user.profile');
         Route::put('user', [UserController::class, 'update'])->name('api.user.update');
         Route::put('user/password', [UserController::class, 'updatePassword'])->name('api.user.password');
 
         // Address management
-        Route::apiResource('addresses', AddressController::class)->names([
-            'index' => 'api.addresses.index',
-            'store' => 'api.addresses.store',
-            'show' => 'api.addresses.show',
-            'update' => 'api.addresses.update',
-            'destroy' => 'api.addresses.destroy',
-        ]);
+        Route::apiResource('addresses', AddressController::class);
 
         // Cart management
         Route::get('cart', [CartController::class, 'index'])->name('api.cart.index');
@@ -74,24 +74,12 @@ Route::prefix('v1')->group(function () {
         Route::delete('cart/{cartItem}', [CartController::class, 'destroy'])->name('api.cart.destroy');
 
         // Orders
-        Route::apiResource('orders', OrderController::class)->names([
-            'index' => 'api.orders.index',
-            'store' => 'api.orders.store',
-            'show' => 'api.orders.show',
-            'update' => 'api.orders.update',
-            'destroy' => 'api.orders.destroy',
-        ]);
+        Route::apiResource('orders', OrderController::class);
         Route::post('orders/{order}/cancel', [OrderController::class, 'cancel'])->name('api.orders.cancel');
         Route::post('orders/{order}/return', [OrderController::class, 'requestReturn'])->name('api.orders.return');
 
         // Return Requests
-        Route::apiResource('return-requests', ReturnRequestController::class)->names([
-            'index' => 'api.returns.index',
-            'store' => 'api.returns.store',
-            'show' => 'api.returns.show',
-            'update' => 'api.returns.update',
-            'destroy' => 'api.returns.destroy',
-        ]);
+        Route::apiResource('return-requests', ReturnRequestController::class);
         Route::post('return-requests/{returnRequest}/cancel', [ReturnRequestController::class, 'cancel'])->name('api.returns.cancel');
 
         // B2B routes
@@ -109,7 +97,7 @@ Route::prefix('v1')->group(function () {
                 'destroy' => 'api.admin.products.destroy',
             ]);
             
-            // Category management
+            // Category management 
             Route::apiResource('categories', CategoryController::class)->except(['index', 'show'])->names([
                 'store' => 'api.admin.categories.store',
                 'update' => 'api.admin.categories.update',
@@ -180,8 +168,5 @@ Route::prefix('v1')->group(function () {
                 'destroy' => 'api.admin.payment.gateways.destroy',
             ]);
         });
-
-        // Logout
-        Route::post('logout', [AuthController::class, 'logout'])->name('api.logout');
     });
 });

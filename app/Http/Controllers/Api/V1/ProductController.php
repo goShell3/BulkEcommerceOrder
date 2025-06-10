@@ -9,6 +9,10 @@ use App\Http\Resources\Api\V1\ProductResource;
 use App\Models\Product;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 /**
  * @OA\Tag(
@@ -62,29 +66,33 @@ class ProductController extends Controller
      *     )
      * )
      */
-    public function index(): AnonymousResourceCollection
+    public function index(Request $request): AnonymousResourceCollection
     {
-        $query = Product::query();
+        $query = Product::with(['category', 'brand']);
 
-        if (request('category')) {
-            $query->where('category_id', request('category'));
+        // Apply filters
+        if ($request->has('category_id')) {
+            $query->where('category_id', $request->category_id);
         }
 
-        if (request('search')) {
-            $query->where(
-                function ($q) {
-                    $q->where('name', 'like', '%' . request('search') . '%')
-                        ->orWhere('description', 'like', '%' . request('search') . '%');
-                }
-            );
+        if ($request->has('brand_id')) {
+            $query->where('brand_id', $request->brand_id);
         }
 
-        if (request('sort')) {
-            $order = request('order', 'asc');
-            $query->orderBy(request('sort'), $order);
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
         }
 
-        $products = $query->paginate(10);
+        // Apply sorting
+        $sortField = $request->get('sort_by', 'created_at');
+        $sortDirection = $request->get('sort_direction', 'desc');
+        $query->orderBy($sortField, $sortDirection);
+
+        $products = $query->paginate($request->get('per_page', 15));
 
         return ProductResource::collection($products);
     }
@@ -144,10 +152,48 @@ class ProductController extends Controller
      *     )
      * )
      */
-    public function store(StoreProductRequest $request): ProductResource
+    public function store(Request $request)
     {
-        $product = Product::create($request->validated());
-        return new ProductResource($product);
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'price' => 'required|numeric|min:0',
+            'stock' => 'required|integer|min:0',
+            'category_id' => 'required|exists:categories,id',
+            'brand_id' => 'required|exists:brands,id',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'sku' => 'required|string|unique:products,sku',
+            'status' => 'required|in:active,inactive',
+            'featured' => 'boolean',
+            'meta_title' => 'nullable|string|max:255',
+            'meta_description' => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->respondWithError('Validation failed', 422, $validator->errors());
+        }
+
+        try {
+            $product = new Product($request->except('images'));
+            $product->slug = Str::slug($request->name);
+            $product->save();
+
+            // Handle image uploads
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $image) {
+                    $path = $image->store('products', 'public');
+                    $product->images()->create(['path' => $path]);
+                }
+            }
+
+            return $this->respondWithSuccess(
+                $product->load(['category', 'brand', 'images']),
+                'Product created successfully',
+                201
+            );
+        } catch (\Exception $e) {
+            return $this->respondWithError('Failed to create product', 500, $e->getMessage());
+        }
     }
 
     /**
@@ -187,10 +233,57 @@ class ProductController extends Controller
      *     )
      * )
      */
-    public function update(UpdateProductRequest $request, Product $product): ProductResource
+    public function update(Request $request, Product $product)
     {
-        $product->update($request->validated());
-        return new ProductResource($product);
+        $validator = Validator::make($request->all(), [
+            'name' => 'string|max:255',
+            'description' => 'string',
+            'price' => 'numeric|min:0',
+            'stock' => 'integer|min:0',
+            'category_id' => 'exists:categories,id',
+            'brand_id' => 'exists:brands,id',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'sku' => 'string|unique:products,sku,' . $product->id,
+            'status' => 'in:active,inactive',
+            'featured' => 'boolean',
+            'meta_title' => 'nullable|string|max:255',
+            'meta_description' => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->respondWithError('Validation failed', 422, $validator->errors());
+        }
+
+        try {
+            if ($request->has('name')) {
+                $product->slug = Str::slug($request->name);
+            }
+
+            $product->update($request->except('images'));
+
+            // Handle image uploads
+            if ($request->hasFile('images')) {
+                // Delete old images if requested
+                if ($request->has('delete_old_images')) {
+                    foreach ($product->images as $image) {
+                        Storage::disk('public')->delete($image->path);
+                        $image->delete();
+                    }
+                }
+
+                foreach ($request->file('images') as $image) {
+                    $path = $image->store('products', 'public');
+                    $product->images()->create(['path' => $path]);
+                }
+            }
+
+            return $this->respondWithSuccess(
+                $product->load(['category', 'brand', 'images']),
+                'Product updated successfully'
+            );
+        } catch (\Exception $e) {
+            return $this->respondWithError('Failed to update product', 500, $e->getMessage());
+        }
     }
 
     /**
@@ -217,7 +310,18 @@ class ProductController extends Controller
      */
     public function destroy(Product $product): JsonResponse
     {
-        $product->delete();
-        return response()->json(null, 204);
+        try {
+            // Delete associated images
+            foreach ($product->images as $image) {
+                Storage::disk('public')->delete($image->path);
+                $image->delete();
+            }
+
+            $product->delete();
+
+            return $this->respondWithMessage('Product deleted successfully');
+        } catch (\Exception $e) {
+            return $this->respondWithError('Failed to delete product', 500, $e->getMessage());
+        }
     }
 } 

@@ -7,14 +7,17 @@ use App\Http\Requests\Api\V1\Auth\LoginRequest;
 use App\Http\Requests\Api\V1\Auth\RegisterRequest;
 use App\Http\Requests\Api\V1\Auth\ForgotPasswordRequest;
 use App\Http\Requests\Api\V1\Auth\ResetPasswordRequest;
+use App\Http\Requests\Api\V1\Auth\RefreshTokenRequest;
 use App\Http\Resources\Api\V1\UserResource;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Log;
 
 /**
  * @OA\Tag(
@@ -53,24 +56,73 @@ class AuthController extends Controller
      */
     public function login(LoginRequest $request): JsonResponse
     {
-        $user = User::where('email', $request->email)->first();
+        try {
+            $user = User::where('email', $request->email)->first();
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            throw ValidationException::withMessages(
-                [
-                'email' => ['The provided credentials are incorrect.'],
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'User not found',
+                    'errors' => [
+                        'email' => ['No account found with this email address.']
+                    ]
+                ], 404);
+            }
+
+            if (!Hash::check($request->password, $user->password)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid credentials',
+                    'errors' => [
+                        'password' => ['The provided password is incorrect.']
+                    ]
+                ], 401);
+            }
+
+            // Check if user is active
+            if (!$user->is_active) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Account is inactive',
+                    'errors' => [
+                        'account' => ['Your account has been deactivated. Please contact support.']
+                    ]
+                ], 403);
+            }
+
+            // Revoke existing tokens
+            $user->tokens()->delete();
+
+            // Create new token with expiration
+            $token = $user->createToken('api-token', ['*'], now()->addHours(24))->plainTextToken;
+            $refreshToken = $user->createToken('refresh-token', ['refresh'], now()->addDays(30))->plainTextToken;
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Login successful',
+                'data' => [
+                    'token' => $token,
+                    'refresh_token' => $refreshToken,
+                    'token_type' => 'Bearer',
+                    'expires_in' => 86400, // 24 hours in seconds
+                    'user' => new UserResource($user)
                 ]
-            );
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Login error: ' . $e->getMessage(), [
+                'email' => $request->email,
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'An unexpected error occurred during login',
+                'errors' => [
+                    'system' => ['Please try again later or contact support if the problem persists.']
+                ]
+            ], 500);
         }
-
-        $token = $user->createToken('api-token')->plainTextToken;
-
-        return response()->json(
-            [
-            'token' => $token,
-            'user' => new UserResource($user)
-            ]
-        );
     }
 
     /**
@@ -112,11 +164,15 @@ class AuthController extends Controller
             ]
         );
 
-        $token = $user->createToken('api-token')->plainTextToken;
+        $token = $user->createToken('api-token', ['*'], now()->addHours(24))->plainTextToken;
+        $refreshToken = $user->createToken('refresh-token', ['refresh'], now()->addDays(30))->plainTextToken;
 
         return response()->json(
             [
             'token' => $token,
+            'refresh_token' => $refreshToken,
+            'token_type' => 'Bearer',
+            'expires_in' => 86400,
             'user' => new UserResource($user)
             ], 201
         );
@@ -196,6 +252,46 @@ class AuthController extends Controller
     }
 
     /**
+     * @OA\Post(
+     *     path="/api/v1/refresh",
+     *     summary="Refresh token",
+     *     tags={"Authentication"},
+     * @OA\Response(
+     *         response=200,
+     *         description="Token refreshed successfully",
+     * @OA\JsonContent(
+     * @OA\Property(property="token",    type="string", example="1|abcdef123456"),
+     * @OA\Property(property="refresh_token",    type="string", example="2|abcdef123456"),
+     * @OA\Property(property="token_type",    type="string", example="Bearer"),
+     * @OA\Property(property="expires_in",    type="integer", example="86400")
+     *         )
+     *     ),
+     * @OA\Response(
+     *         response=401,
+     *         description="Unauthorized"
+     *     )
+     * )
+     */
+    public function refresh(RefreshTokenRequest $request): JsonResponse
+    {
+        $user = $request->user();
+        
+        // Revoke the refresh token
+        $request->user()->currentAccessToken()->delete();
+        
+        // Create new tokens
+        $token = $user->createToken('api-token', ['*'], now()->addHours(24))->plainTextToken;
+        $refreshToken = $user->createToken('refresh-token', ['refresh'], now()->addDays(30))->plainTextToken;
+
+        return response()->json([
+            'token' => $token,
+            'refresh_token' => $refreshToken,
+            'token_type' => 'Bearer',
+            'expires_in' => 86400
+        ]);
+    }
+
+    /**
      * Logout user (Revoke the token).
      *
      * @param  Request $request
@@ -204,8 +300,7 @@ class AuthController extends Controller
     public function logout(Request $request): JsonResponse
     {
         $request->user()->currentAccessToken()->delete();
-
-        return $this->sendResponse(null, 'User logged out successfully.');
+        return response()->json(['message' => 'Successfully logged out']);
     }
 
     /**
@@ -214,8 +309,8 @@ class AuthController extends Controller
      * @param  Request $request
      * @return JsonResponse
      */
-    public function user(Request $request): JsonResponse
+    public function me(Request $request): JsonResponse
     {
-        return $this->sendResponse($request->user(), 'User retrieved successfully.');
+        return response()->json(new UserResource($request->user()));
     }
 } 

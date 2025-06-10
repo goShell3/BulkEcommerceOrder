@@ -13,21 +13,55 @@ class Product extends Model
 {
     use HasFactory;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
-        'brand_id',
         'name',
-        'slug',
         'description',
+        'sku',
         'price',
-        'stock',
-        'is_active'
+        'b2b_price',
+        'min_order_quantity',
+        'max_order_quantity',
+        'bulk_pricing',
+        'specifications',
+        'is_active',
+        'is_b2b',
+        'requires_approval',
+        'approval_notes',
+        'is_featured_b2b',
+        'featured_until',
+        'category_id',
+        'brand_id',
     ];
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
     protected $casts = [
         'price' => 'decimal:2',
-        'stock' => 'integer',
+        'b2b_price' => 'decimal:2',
+        'bulk_pricing' => 'array',
+        'specifications' => 'array',
         'is_active' => 'boolean',
+        'is_b2b' => 'boolean',
+        'requires_approval' => 'boolean',
+        'is_featured_b2b' => 'boolean',
+        'featured_until' => 'datetime',
     ];
+
+    /**
+     * Get the category that owns the product.
+     */
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
+    }
 
     /**
      * Get the brand that owns the product.
@@ -38,11 +72,19 @@ class Product extends Model
     }
 
     /**
-     * Get the categories for the product.
+     * Get the variants for the product.
      */
-    public function categories(): BelongsToMany
+    public function variants(): HasMany
     {
-        return $this->belongsToMany(Category::class);
+        return $this->hasMany(ProductVariant::class);
+    }
+
+    /**
+     * Get the stock for the product.
+     */
+    public function stock(): HasOne
+    {
+        return $this->hasOne(Stock::class);
     }
 
     /**
@@ -53,28 +95,47 @@ class Product extends Model
         return $this->hasMany(OrderItem::class);
     }
 
-    public function options(): HasMany
+    /**
+     * Get the bulk pricing tiers for the product.
+     */
+    public function bulkPricingTiers(): HasMany
     {
-        return $this->hasMany(ProductOption::class);
+        return $this->hasMany(BulkPricingTier::class);
     }
 
-    public function variants(): HasMany
+    /**
+     * Get the discounts that apply to this product.
+     */
+    public function discounts(): BelongsToMany
     {
-        return $this->hasMany(ProductVariant::class);
+        return $this->belongsToMany(Discount::class);
     }
 
-    public function inventoryLogs(): HasMany
+    /**
+     * Scope a query to only include active products.
+     */
+    public function scopeActive($query)
     {
-        return $this->hasMany(InventoryLog::class);
+        return $query->where('is_active', true);
     }
 
-    public function quoteRequestItems(): HasMany
+    /**
+     * Scope a query to only include B2B products.
+     */
+    public function scopeB2B($query)
     {
-        return $this->hasMany(QuoteRequestItem::class);
+        return $query->where('is_b2b', true);
     }
 
-    public function discounts(): HasMany
+    /**
+     * Scope a query to only include featured B2B products.
+     */
+    public function scopeFeaturedB2B($query)
     {
-        return $this->hasMany(Discount::class);
+        return $query->where('is_featured_b2b', true)
+            ->where(function ($query) {
+                $query->whereNull('featured_until')
+                    ->orWhere('featured_until', '>', now());
+            });
     }
 } 

@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 
 class BaseController extends Controller
 {
+    use ApiResponse;
+
     /**
      * Success response method.
      *
@@ -45,5 +48,20 @@ class BaseController extends Controller
         }
 
         return response()->json($response, $code);
+    }
+
+    protected function respondWithError(string $message, int $code = 400, $errors = null): JsonResponse
+    {
+        return $this->errorResponse($message, $code, $errors);
+    }
+
+    protected function respondWithSuccess($data = null, string $message = null, int $code = 200): JsonResponse
+    {
+        return $this->successResponse($data, $message, $code);
+    }
+
+    protected function respondWithMessage(string $message, int $code = 200): JsonResponse
+    {
+        return $this->showMessage($message, $code);
     }
 } 
