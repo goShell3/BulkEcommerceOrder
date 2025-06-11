@@ -61,7 +61,8 @@ class PaymentService
 
             DB::commit();
             Log::info(
-                'Payment processed successfully', [
+                'Payment processed successfully',
+                [
                 'order_id' => $order->id,
                 'payment_intent_id' => $paymentIntent->id
                 ]
@@ -69,7 +70,8 @@ class PaymentService
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error(
-                'Failed to process payment', [
+                'Failed to process payment',
+                [
                 'order_id' => $order->id,
                 'error' => $e->getMessage()
                 ]
@@ -122,7 +124,8 @@ class PaymentService
 
             DB::commit();
             Log::info(
-                'Refund processed successfully', [
+                'Refund processed successfully',
+                [
                 'order_id' => $order->id,
                 'refund_id' => $refund->id
                 ]
@@ -130,7 +133,8 @@ class PaymentService
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error(
-                'Failed to process refund', [
+                'Failed to process refund',
+                [
                 'order_id' => $order->id,
                 'error' => $e->getMessage()
                 ]
@@ -180,7 +184,8 @@ class PaymentService
             return $paymentIntent->status === 'succeeded';
         } catch (\Exception $e) {
             Log::error(
-                'Failed to verify payment', [
+                'Failed to verify payment',
+                [
                 'order_id' => $order->id,
                 'error' => $e->getMessage()
                 ]

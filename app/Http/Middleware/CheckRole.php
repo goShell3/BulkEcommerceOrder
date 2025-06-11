@@ -14,10 +14,11 @@ class CheckRole
             return response()->json(
                 [
                 'message' => 'Unauthorized. Insufficient permissions.'
-                ], 403
+                ],
+                403
             );
         }
 
         return $next($request);
     }
-} 
+}

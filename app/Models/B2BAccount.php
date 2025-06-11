@@ -38,4 +38,4 @@ class B2BAccount extends Model
     {
         return $this->hasMany(QuoteRequest::class);
     }
-} 
+}

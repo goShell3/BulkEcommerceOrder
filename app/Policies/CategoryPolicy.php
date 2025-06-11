@@ -73,4 +73,4 @@ class CategoryPolicy
     {
         return $user->hasRole('admin');
     }
-} 
+}

@@ -45,4 +45,4 @@ class AuthService
     {
         auth()->user()->currentAccessToken()->delete();
     }
-} 
+}

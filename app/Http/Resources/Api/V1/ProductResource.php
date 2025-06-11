@@ -48,4 +48,4 @@ class ProductResource extends JsonResource
             'category' => new CategoryResource($this->whenLoaded('category')),
         ];
     }
-} 
+}

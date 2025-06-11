@@ -90,4 +90,4 @@ class ProviderRepository
     {
         return $this->app;
     }
-} 
+}

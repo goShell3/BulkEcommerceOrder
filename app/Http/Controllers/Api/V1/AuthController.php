@@ -174,7 +174,8 @@ class AuthController extends Controller
             'token_type' => 'Bearer',
             'expires_in' => 86400,
             'user' => new UserResource($user)
-            ], 201
+            ],
+            201
         );
     }
 
@@ -313,4 +314,4 @@ class AuthController extends Controller
     {
         return response()->json(new UserResource($request->user()));
     }
-} 
+}

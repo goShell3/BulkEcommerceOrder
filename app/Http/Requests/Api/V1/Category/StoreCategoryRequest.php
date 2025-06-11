@@ -28,4 +28,4 @@ class StoreCategoryRequest extends FormRequest
             'status' => ['required', 'in:active,inactive'],
         ];
     }
-} 
+}

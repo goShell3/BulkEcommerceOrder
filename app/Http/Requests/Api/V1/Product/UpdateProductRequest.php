@@ -31,4 +31,4 @@ class UpdateProductRequest extends FormRequest
             'status' => ['sometimes', 'required', 'in:active,inactive'],
         ];
     }
-} 
+}

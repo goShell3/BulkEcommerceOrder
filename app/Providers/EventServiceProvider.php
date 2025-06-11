@@ -30,7 +30,7 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
-        
+
         // Order Events
         OrderCreated::class => [
             SendOrderConfirmation::class,
@@ -76,4 +76,4 @@ class EventServiceProvider extends ServiceProvider
     {
         return false;
     }
-} 
+}

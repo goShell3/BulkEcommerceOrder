@@ -24,4 +24,4 @@ class LoginResource extends JsonResource
             'token_type' => $this['token_type'],
         ];
     }
-} 
+}

@@ -73,4 +73,4 @@ class ReturnRequestPolicy
     {
         return $user->hasRole('admin') && $returnRequest->status === 'approved';
     }
-} 
+}

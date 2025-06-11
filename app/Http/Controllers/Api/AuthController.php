@@ -29,7 +29,8 @@ class AuthController extends Controller
             return response()->json(
                 [
                 'message' => $result['message']
-                ], 401
+                ],
+                401
             );
         }
 
@@ -57,4 +58,4 @@ class AuthController extends Controller
     {
         return response()->json(auth()->user());
     }
-} 
+}

@@ -35,7 +35,8 @@ class NotificationService
             Log::info('Order confirmation sent', ['order_id' => $order->id]);
         } catch (\Exception $e) {
             Log::error(
-                'Failed to send order confirmation', [
+                'Failed to send order confirmation',
+                [
                 'order_id' => $order->id,
                 'error' => $e->getMessage()
                 ]
@@ -54,14 +55,16 @@ class NotificationService
         try {
             $order->user->notify(new OrderStatusUpdate($order));
             Log::info(
-                'Order status update sent', [
+                'Order status update sent',
+                [
                 'order_id' => $order->id,
                 'status' => $order->status
                 ]
             );
         } catch (\Exception $e) {
             Log::error(
-                'Failed to send order status update', [
+                'Failed to send order status update',
+                [
                 'order_id' => $order->id,
                 'error' => $e->getMessage()
                 ]
@@ -82,7 +85,8 @@ class NotificationService
             Log::info('Order cancellation sent', ['order_id' => $order->id]);
         } catch (\Exception $e) {
             Log::error(
-                'Failed to send order cancellation', [
+                'Failed to send order cancellation',
+                [
                 'order_id' => $order->id,
                 'error' => $e->getMessage()
                 ]
@@ -103,7 +107,8 @@ class NotificationService
             Log::info('Refund confirmation sent', ['order_id' => $order->id]);
         } catch (\Exception $e) {
             Log::error(
-                'Failed to send refund confirmation', [
+                'Failed to send refund confirmation',
+                [
                 'order_id' => $order->id,
                 'error' => $e->getMessage()
                 ]
@@ -124,7 +129,8 @@ class NotificationService
             Log::info('Shipping confirmation sent', ['order_id' => $order->id]);
         } catch (\Exception $e) {
             Log::error(
-                'Failed to send shipping confirmation', [
+                'Failed to send shipping confirmation',
+                [
                 'order_id' => $order->id,
                 'error' => $e->getMessage()
                 ]
@@ -145,7 +151,8 @@ class NotificationService
             Log::info('Delivery confirmation sent', ['order_id' => $order->id]);
         } catch (\Exception $e) {
             Log::error(
-                'Failed to send delivery confirmation', [
+                'Failed to send delivery confirmation',
+                [
                 'order_id' => $order->id,
                 'error' => $e->getMessage()
                 ]
@@ -164,13 +171,15 @@ class NotificationService
         try {
             $returnRequest->order->user->notify(new ReturnRequestConfirmation($returnRequest));
             Log::info(
-                'Return request confirmation sent', [
+                'Return request confirmation sent',
+                [
                 'return_request_id' => $returnRequest->id
                 ]
             );
         } catch (\Exception $e) {
             Log::error(
-                'Failed to send return request confirmation', [
+                'Failed to send return request confirmation',
+                [
                 'return_request_id' => $returnRequest->id,
                 'error' => $e->getMessage()
                 ]
@@ -189,14 +198,16 @@ class NotificationService
         try {
             $returnRequest->order->user->notify(new ReturnRequestStatusUpdate($returnRequest));
             Log::info(
-                'Return request status update sent', [
+                'Return request status update sent',
+                [
                 'return_request_id' => $returnRequest->id,
                 'status' => $returnRequest->status
                 ]
             );
         } catch (\Exception $e) {
             Log::error(
-                'Failed to send return request status update', [
+                'Failed to send return request status update',
+                [
                 'return_request_id' => $returnRequest->id,
                 'error' => $e->getMessage()
                 ]
@@ -215,13 +226,15 @@ class NotificationService
         try {
             $returnRequest->order->user->notify(new ReturnRequestRejection($returnRequest));
             Log::info(
-                'Return request rejection sent', [
+                'Return request rejection sent',
+                [
                 'return_request_id' => $returnRequest->id
                 ]
             );
         } catch (\Exception $e) {
             Log::error(
-                'Failed to send return request rejection', [
+                'Failed to send return request rejection',
+                [
                 'return_request_id' => $returnRequest->id,
                 'error' => $e->getMessage()
                 ]
@@ -240,13 +253,15 @@ class NotificationService
         try {
             $returnRequest->order->user->notify(new ReturnRequestCompletion($returnRequest));
             Log::info(
-                'Return request completion sent', [
+                'Return request completion sent',
+                [
                 'return_request_id' => $returnRequest->id
                 ]
             );
         } catch (\Exception $e) {
             Log::error(
-                'Failed to send return request completion', [
+                'Failed to send return request completion',
+                [
                 'return_request_id' => $returnRequest->id,
                 'error' => $e->getMessage()
                 ]
@@ -265,13 +280,15 @@ class NotificationService
         try {
             $returnRequest->order->user->notify(new ReturnShippingLabel($returnRequest));
             Log::info(
-                'Return shipping label sent', [
+                'Return shipping label sent',
+                [
                 'return_request_id' => $returnRequest->id
                 ]
             );
         } catch (\Exception $e) {
             Log::error(
-                'Failed to send return shipping label', [
+                'Failed to send return shipping label',
+                [
                 'return_request_id' => $returnRequest->id,
                 'error' => $e->getMessage()
                 ]
@@ -291,17 +308,19 @@ class NotificationService
             $admins = User::where('role', 'admin')->get();
             Notification::send($admins, new ReturnRequestConfirmation($returnRequest));
             Log::info(
-                'Admin notification sent for return request', [
+                'Admin notification sent for return request',
+                [
                 'return_request_id' => $returnRequest->id
                 ]
             );
         } catch (\Exception $e) {
             Log::error(
-                'Failed to notify admin about return request', [
+                'Failed to notify admin about return request',
+                [
                 'return_request_id' => $returnRequest->id,
                 'error' => $e->getMessage()
                 ]
             );
         }
     }
-} 
+}

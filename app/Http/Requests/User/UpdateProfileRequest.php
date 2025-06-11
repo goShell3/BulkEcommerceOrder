@@ -34,4 +34,4 @@ class UpdateProfileRequest extends FormRequest
             'address' => ['sometimes', 'string', 'max:255'],
         ];
     }
-} 
+}

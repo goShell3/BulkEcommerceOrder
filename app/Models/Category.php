@@ -1,4 +1,11 @@
-<?php
+/**
+ * Category Model
+ *
+ * This model represents a product category in the e-commerce system.
+ * Categories can have a hierarchical structure with parent-child relationships.
+ *
+ * @package App\Models
+ */
 
 namespace App\Models;
 
@@ -7,6 +14,20 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
+/**
+ * Class Category
+ *
+ * @property int $id
+ * @property string $name
+ * @property string $slug
+ * @property int|null $parent_id
+ * @property string|null $description
+ * @property string|null $image_url
+ * @property string|null $meta_title
+ * @property string|null $meta_description
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ */
 class Category extends Model
 {
     use HasFactory;
@@ -26,17 +47,29 @@ class Category extends Model
     ];
 
     /**
-     * The attributes that should be cast.
+     * Get the parent category of this category.
      *
-     * @var array<string, string>
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    protected $casts = [
-        'is_active' => 'boolean',
-        'order' => 'integer',
-    ];
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(Category::class, 'parent_id');
+    }
 
     /**
-     * Get the products for the category.
+     * Get the child categories of this category.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function children(): HasMany
+    {
+        return $this->hasMany(Category::class, 'parent_id');
+    }
+
+    /**
+     * Get the products associated with this category.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function products(): HasMany
     {
@@ -44,9 +77,11 @@ class Category extends Model
     }
 
     /**
-     * Get the parent category.
+     * Get the discounts associated with this category.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function parent()
+    public function discounts(): HasMany
     {
         return $this->belongsTo(Category::class, 'parent_id');
     }
