@@ -135,7 +135,7 @@ class ProductController extends Controller
      * @OA\JsonContent(
      *             required={"name","description","price","category_id"},
      * @OA\Property(property="name",                       type="string", example="Product Name"),
-     * @OA\Property(property="description",                type="string", example="Product Description"),
+     * @OA\Property(property="description",                type="string", example="Product Description")
      * @OA\Property(property="price",                      type="number", format="float", example=99.99),
      * @OA\Property(property="category_id",                type="integer", example=1),
      * @OA\Property(property="stock",                      type="integer", example=100)

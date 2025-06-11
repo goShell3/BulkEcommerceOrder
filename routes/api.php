@@ -17,6 +17,8 @@ use App\Http\Controllers\Api\V1\ShippingCarrierController;
 use App\Http\Controllers\Api\V1\ShippingMethodController;
 use App\Http\Controllers\Api\V1\PaymentGatewayConfigController;
 use App\Http\Controllers\Api\V1\UserController;
+use App\Http\Controllers\Api\V1\B2BUserController;
+use App\Http\Controllers\Api\V1\B2BProductController;
 use App\Http\Controllers\Api\AuthController as ApiAuthController;
 
 /*
@@ -90,6 +92,7 @@ Route::prefix('v1')->group(function () {
 
         // Admin routes
         Route::middleware('role:admin')->group(function () {
+            
             // Product management
             Route::apiResource('products', ProductController::class)->except(['index', 'show'])->names([
                 'store' => 'api.admin.products.store',
@@ -144,29 +147,29 @@ Route::prefix('v1')->group(function () {
             ]);
 
             // Shipping management
-            Route::apiResource('shipping-carriers', ShippingCarrierController::class)->names([
-                'index' => 'api.admin.shipping.carriers.index',
-                'store' => 'api.admin.shipping.carriers.store',
-                'show' => 'api.admin.shipping.carriers.show',
-                'update' => 'api.admin.shipping.carriers.update',
-                'destroy' => 'api.admin.shipping.carriers.destroy',
-            ]);
-            Route::apiResource('shipping-methods', ShippingMethodController::class)->names([
-                'index' => 'api.admin.shipping.methods.index',
-                'store' => 'api.admin.shipping.methods.store',
-                'show' => 'api.admin.shipping.methods.show',
-                'update' => 'api.admin.shipping.methods.update',
-                'destroy' => 'api.admin.shipping.methods.destroy',
-            ]);
+            // Route::apiResource('shipping-carriers', ShippingCarrierController::class)->names([
+            //     'index' => 'api.admin.shipping.carriers.index',
+            //     'store' => 'api.admin.shipping.carriers.store',
+            //     'show' => 'api.admin.shipping.carriers.show',
+            //     'update' => 'api.admin.shipping.carriers.update',
+            //     'destroy' => 'api.admin.shipping.carriers.destroy',
+            // ]);
+            // Route::apiResource('shipping-methods', ShippingMethodController::class)->names([
+            //     'index' => 'api.admin.shipping.methods.index',
+            //     'store' => 'api.admin.shipping.methods.store',
+            //     'show' => 'api.admin.shipping.methods.show',
+            //     'update' => 'api.admin.shipping.methods.update',
+            //     'destroy' => 'api.admin.shipping.methods.destroy',
+            // ]);
 
-            // Payment gateway management
-            Route::apiResource('payment-gateways', PaymentGatewayConfigController::class)->names([
-                'index' => 'api.admin.payment.gateways.index',
-                'store' => 'api.admin.payment.gateways.store',
-                'show' => 'api.admin.payment.gateways.show',
-                'update' => 'api.admin.payment.gateways.update',
-                'destroy' => 'api.admin.payment.gateways.destroy',
-            ]);
+            // // Payment gateway management
+            // Route::apiResource('payment-gateways', PaymentGatewayConfigController::class)->names([
+            //     'index' => 'api.admin.payment.gateways.index',
+            //     'store' => 'api.admin.payment.gateways.store',
+            //     'show' => 'api.admin.payment.gateways.show',
+            //     'update' => 'api.admin.payment.gateways.update',
+            //     'destroy' => 'api.admin.payment.gateways.destroy',
+            // ]);
         });
     });
 });
