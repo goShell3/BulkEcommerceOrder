@@ -1,3 +1,4 @@
+<?php
 /**
  * OrderAddress Model
  *

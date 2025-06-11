@@ -1,3 +1,4 @@
+<?php
 /**
  * OrderItem Model
  *

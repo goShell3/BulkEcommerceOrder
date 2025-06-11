@@ -1,3 +1,4 @@
+<?php
 /**
  * QuoteRequestItem Model
  *

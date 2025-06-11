@@ -1,3 +1,4 @@
+<?php
 /**
  * EmailLog Model
  *

@@ -1,3 +1,5 @@
+<?php
+
 /**
  * Product Model
  *
@@ -16,20 +18,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-/**
- * Class Product
- *
- * @property int $id
- * @property int $brand_id
- * @property string $name
- * @property string $slug
- * @property string $description
- * @property float $price
- * @property int $stock
- * @property bool $is_active
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- */
 class Product extends Model
 {
     use HasFactory;
@@ -76,131 +64,76 @@ class Product extends Model
         'featured_until' => 'datetime',
     ];
 
-    /**
-     * Get the category that owns the product.
-     */
+    // Relationships
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
     }
 
-    /**
-     * Get the brand that owns the product.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function brand(): BelongsTo
     {
         return $this->belongsTo(Brand::class);
     }
 
-    /**
-
-     * Get the variants for the product.
-     */
     public function variants(): HasMany
     {
         return $this->hasMany(ProductVariant::class);
     }
 
-    /**
-     * Get the stock for the product.
+    public function options(): HasMany
+    {
+        return $this->hasMany(ProductOption::class); // Adjust if BulkPricingTier was meant
+    }
 
-     * Get the categories for the product.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
     public function stock(): HasOne
     {
         return $this->hasOne(Stock::class);
     }
 
-    /**
-     * Get the order items for the product.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
     public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class);
     }
 
-    /**
-
-     * Get the bulk pricing tiers for the product.
-     */
     public function bulkPricingTiers(): HasMany
-
-     * Get the product options.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function options(): HasMany
     {
         return $this->hasMany(BulkPricingTier::class);
     }
 
-    /**
-     * Get the discounts that apply to this product.
-     */
     public function discounts(): BelongsToMany
-
-     * Get the product variants.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function variants(): HasMany
     {
         return $this->belongsToMany(Discount::class);
     }
 
-    /**
-
-     * Scope a query to only include active products.
-     */
-    public function scopeActive($query)
-
-     * Get the inventory logs for the product.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
     public function inventoryLogs(): HasMany
+    {
+        return $this->hasMany(InventoryLog::class);
+    }
+
+    public function quoteRequestItems(): HasMany
+    {
+        return $this->hasMany(QuoteRequestItem::class);
+    }
+
+    // Scopes
+
+    public function scopeActive($query)
     {
         return $query->where('is_active', true);
     }
 
-    /**
-     * Scope a query to only include B2B products.
-     */
     public function scopeB2B($query)
-
-     * Get the quote request items for the product.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function quoteRequestItems(): HasMany
-
     {
         return $query->where('is_b2b', true);
     }
 
-    /**
-
-     * Scope a query to only include featured B2B products.
-     */
     public function scopeFeaturedB2B($query)
-
-     * Get the discounts associated with the product.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function discounts(): HasMany
-
     {
         return $query->where('is_featured_b2b', true)
             ->where(function ($query) {
                 $query->whereNull('featured_until')
-                    ->orWhere('featured_until', '>', now());
+                      ->orWhere('featured_until', '>', now());
             });
     }
-} 
+}

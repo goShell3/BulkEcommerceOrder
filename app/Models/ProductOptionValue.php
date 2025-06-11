@@ -1,3 +1,4 @@
+<?php
 /**
  * ProductOptionValue Model
  *

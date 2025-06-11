@@ -1,3 +1,4 @@
+<?php
 /**
  * InventoryLog Model
  *
