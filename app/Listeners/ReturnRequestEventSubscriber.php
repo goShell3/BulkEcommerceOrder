@@ -67,13 +67,15 @@ class ReturnRequestEventSubscriber
             $this->notificationService->notifyAdminAboutReturnRequest($event->returnRequest);
 
             Log::info(
-                'Return request created successfully', [
+                'Return request created successfully',
+                [
                 'return_request_id' => $event->returnRequest->id
                 ]
             );
         } catch (\Exception $e) {
             Log::error(
-                'Error handling return request created event', [
+                'Error handling return request created event',
+                [
                 'return_request_id' => $event->returnRequest->id,
                 'error' => $e->getMessage()
                 ]
@@ -95,26 +97,28 @@ class ReturnRequestEventSubscriber
 
             // Handle specific status updates
             switch ($event->returnRequest->status) {
-            case 'approved':
-                $this->handleApprovedStatus($event->returnRequest);
-                break;
-            case 'rejected':
-                $this->handleRejectedStatus($event->returnRequest);
-                break;
-            case 'completed':
-                $this->handleCompletedStatus($event->returnRequest);
-                break;
+                case 'approved':
+                    $this->handleApprovedStatus($event->returnRequest);
+                    break;
+                case 'rejected':
+                    $this->handleRejectedStatus($event->returnRequest);
+                    break;
+                case 'completed':
+                    $this->handleCompletedStatus($event->returnRequest);
+                    break;
             }
 
             Log::info(
-                'Return request status updated', [
+                'Return request status updated',
+                [
                 'return_request_id' => $event->returnRequest->id,
                 'status' => $event->returnRequest->status
                 ]
             );
         } catch (\Exception $e) {
             Log::error(
-                'Error handling return request status update', [
+                'Error handling return request status update',
+                [
                 'return_request_id' => $event->returnRequest->id,
                 'error' => $e->getMessage()
                 ]
@@ -183,4 +187,4 @@ class ReturnRequestEventSubscriber
             [ReturnRequestEventSubscriber::class, 'handleReturnRequestStatusUpdated']
         );
     }
-} 
+}

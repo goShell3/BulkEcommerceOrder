@@ -49,4 +49,4 @@ class OrderResource extends JsonResource
             'user' => new UserResource($this->whenLoaded('user')),
         ];
     }
-} 
+}

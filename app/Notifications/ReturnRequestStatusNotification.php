@@ -58,7 +58,7 @@ class ReturnRequestStatusNotification extends Notification implements ShouldQueu
      */
     public function toMail($notifiable): MailMessage
     {
-        $message = (new MailMessage)
+        $message = (new MailMessage())
             ->subject('Return Request Status Update - Request #' . $this->returnRequest->id)
             ->greeting('Hello ' . $notifiable->name)
             ->line('Your return request status has been updated.');
@@ -92,4 +92,4 @@ class ReturnRequestStatusNotification extends Notification implements ShouldQueu
             'updated_at' => $this->returnRequest->updated_at,
         ];
     }
-} 
+}

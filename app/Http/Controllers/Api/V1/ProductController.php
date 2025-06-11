@@ -324,4 +324,4 @@ class ProductController extends Controller
             return $this->respondWithError('Failed to delete product', 500, $e->getMessage());
         }
     }
-} 
+}

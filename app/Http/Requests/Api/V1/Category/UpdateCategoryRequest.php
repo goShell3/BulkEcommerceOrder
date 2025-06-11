@@ -28,4 +28,4 @@ class UpdateCategoryRequest extends FormRequest
             'status' => ['sometimes', 'required', 'in:active,inactive'],
         ];
     }
-} 
+}

@@ -50,11 +50,11 @@ class UpdateReturnRequestStatusRequest extends FormRequest
         $validator->after(
             function ($validator) {
                 $returnRequest = $this->route('returnRequest');
-            
+
                 if ($returnRequest && !$returnRequest->canBeUpdatedTo($this->status)) {
                     $validator->errors()->add('status', 'This return request cannot be updated to the specified status.');
                 }
             }
         );
     }
-} 
+}

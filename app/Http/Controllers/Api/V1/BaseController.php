@@ -50,6 +50,7 @@ class BaseController extends Controller
         return response()->json($response, $code);
     }
 
+
     protected function respondWithError(string $message, int $code = 400, $errors = null): JsonResponse
     {
         return $this->errorResponse($message, $code, $errors);
@@ -64,4 +65,5 @@ class BaseController extends Controller
     {
         return $this->showMessage($message, $code);
     }
-} 
+}
+

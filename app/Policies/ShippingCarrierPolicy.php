@@ -81,4 +81,4 @@ class ShippingCarrierPolicy
     {
         return $user->hasRole('admin');
     }
-} 
+}

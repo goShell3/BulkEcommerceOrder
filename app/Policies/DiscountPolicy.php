@@ -81,4 +81,4 @@ class DiscountPolicy
     {
         return $user->hasRole('admin');
     }
-} 
+}

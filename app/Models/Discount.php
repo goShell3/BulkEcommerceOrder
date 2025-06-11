@@ -1,4 +1,11 @@
-<?php
+/**
+ * Discount Model
+ *
+ * This model represents a discount or promotion in the e-commerce system.
+ * Discounts can be applied to specific products, categories, or all products.
+ *
+ * @package App\Models
+ */
 
 namespace App\Models;
 
@@ -7,6 +14,25 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * Class Discount
+ *
+ * @property int $id
+ * @property string $code
+ * @property string $name
+ * @property string $type
+ * @property float $value
+ * @property float|null $min_order_value
+ * @property float|null $max_discount_amount
+ * @property \Carbon\Carbon $start_date
+ * @property \Carbon\Carbon $end_date
+ * @property int|null $usage_limit_total
+ * @property int|null $usage_limit_per_user
+ * @property bool $is_active
+ * @property bool $applies_to_all_products
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ */
 class Discount extends Model
 {
     use HasFactory;
@@ -46,6 +72,9 @@ class Discount extends Model
 
     /**
      * Get the products that this discount applies to.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+
      */
     public function products(): BelongsToMany
     {
@@ -54,6 +83,10 @@ class Discount extends Model
 
     /**
      * Get the categories that this discount applies to.
+
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+
      */
     public function categories(): BelongsToMany
     {
@@ -91,6 +124,11 @@ class Discount extends Model
         return $discountAmount;
     }
 
+    /**
+     * Get the usage records for this discount.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function usages(): HasMany
     {
         return $this->hasMany(UsedDiscount::class);

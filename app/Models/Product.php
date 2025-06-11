@@ -1,4 +1,11 @@
-<?php
+/**
+ * Product Model
+ *
+ * This model represents a product in the e-commerce system.
+ * Products can have variants, options, and belong to categories and brands.
+ *
+ * @package App\Models
+ */
 
 namespace App\Models;
 
@@ -9,6 +16,20 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
+/**
+ * Class Product
+ *
+ * @property int $id
+ * @property int $brand_id
+ * @property string $name
+ * @property string $slug
+ * @property string $description
+ * @property float $price
+ * @property int $stock
+ * @property bool $is_active
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ */
 class Product extends Model
 {
     use HasFactory;
@@ -65,6 +86,8 @@ class Product extends Model
 
     /**
      * Get the brand that owns the product.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function brand(): BelongsTo
     {
@@ -72,6 +95,7 @@ class Product extends Model
     }
 
     /**
+
      * Get the variants for the product.
      */
     public function variants(): HasMany
@@ -81,6 +105,10 @@ class Product extends Model
 
     /**
      * Get the stock for the product.
+
+     * Get the categories for the product.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function stock(): HasOne
     {
@@ -89,6 +117,8 @@ class Product extends Model
 
     /**
      * Get the order items for the product.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function orderItems(): HasMany
     {
@@ -96,9 +126,17 @@ class Product extends Model
     }
 
     /**
+
      * Get the bulk pricing tiers for the product.
      */
     public function bulkPricingTiers(): HasMany
+
+     * Get the product options.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function options(): HasMany
+
     {
         return $this->hasMany(BulkPricingTier::class);
     }
@@ -107,14 +145,28 @@ class Product extends Model
      * Get the discounts that apply to this product.
      */
     public function discounts(): BelongsToMany
+
+     * Get the product variants.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function variants(): HasMany
+
     {
         return $this->belongsToMany(Discount::class);
     }
 
     /**
+
      * Scope a query to only include active products.
      */
     public function scopeActive($query)
+
+     * Get the inventory logs for the product.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function inventoryLogs(): HasMany
     {
         return $query->where('is_active', true);
     }
@@ -123,14 +175,29 @@ class Product extends Model
      * Scope a query to only include B2B products.
      */
     public function scopeB2B($query)
+
+     * Get the quote request items for the product.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function quoteRequestItems(): HasMany
+
     {
         return $query->where('is_b2b', true);
     }
 
     /**
+
      * Scope a query to only include featured B2B products.
      */
     public function scopeFeaturedB2B($query)
+
+     * Get the discounts associated with the product.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function discounts(): HasMany
+
     {
         return $query->where('is_featured_b2b', true)
             ->where(function ($query) {

@@ -81,4 +81,4 @@ class ShippingMethodPolicy
     {
         return $user->hasRole('admin');
     }
-} 
+}

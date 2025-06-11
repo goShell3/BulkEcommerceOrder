@@ -31,4 +31,4 @@ class StoreProductRequest extends FormRequest
             'status' => ['required', 'in:active,inactive'],
         ];
     }
-} 
+}

@@ -43,6 +43,7 @@ class Brand extends Model
         return $this->hasMany(Product::class);
     }
 
+
     /**
      * Scope a query to only include active brands.
      */

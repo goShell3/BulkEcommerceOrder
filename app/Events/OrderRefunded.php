@@ -13,7 +13,9 @@ use Illuminate\Queue\SerializesModels;
 
 class OrderRefunded implements ShouldBroadcast
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable;
+    use InteractsWithSockets;
+    use SerializesModels;
 
     /**
      * The order instance.
@@ -80,4 +82,4 @@ class OrderRefunded implements ShouldBroadcast
             'refunded_at' => $this->order->updated_at,
         ];
     }
-} 
+}

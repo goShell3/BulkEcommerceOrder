@@ -18,9 +18,9 @@ class ReturnRequestApiTest extends TestCase
     }
 
     /**
-     * 
      *
-     * @test 
+     *
+     * @test
      */
     public function itCanListReturnRequests()
     {
@@ -56,9 +56,9 @@ class ReturnRequestApiTest extends TestCase
     }
 
     /**
-     * 
      *
-     * @test 
+     *
+     * @test
      */
     public function itCanCreateAReturnRequest()
     {
@@ -91,9 +91,9 @@ class ReturnRequestApiTest extends TestCase
     }
 
     /**
-     * 
      *
-     * @test 
+     *
+     * @test
      */
     public function itCanShowAReturnRequest()
     {
@@ -119,9 +119,9 @@ class ReturnRequestApiTest extends TestCase
     }
 
     /**
-     * 
      *
-     * @test 
+     *
+     * @test
      */
     public function itCanUpdateAReturnRequest()
     {
@@ -140,9 +140,9 @@ class ReturnRequestApiTest extends TestCase
     }
 
     /**
-     * 
      *
-     * @test 
+     *
+     * @test
      */
     public function itCanDeleteAReturnRequest()
     {
@@ -155,9 +155,9 @@ class ReturnRequestApiTest extends TestCase
     }
 
     /**
-     * 
      *
-     * @test 
+     *
+     * @test
      */
     public function itValidatesRequiredFieldsWhenCreatingReturnRequest()
     {
@@ -168,9 +168,9 @@ class ReturnRequestApiTest extends TestCase
     }
 
     /**
-     * 
      *
-     * @test 
+     *
+     * @test
      */
     public function itValidatesOrderExistsWhenCreatingReturnRequest()
     {
@@ -187,9 +187,9 @@ class ReturnRequestApiTest extends TestCase
     }
 
     /**
-     * 
      *
-     * @test 
+     *
+     * @test
      */
     public function itValidatesUrgentReturnForHighValueOrders()
     {
@@ -212,4 +212,4 @@ class ReturnRequestApiTest extends TestCase
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['is_urgent']);
     }
-} 
+}

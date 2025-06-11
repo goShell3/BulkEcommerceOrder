@@ -12,23 +12,20 @@ class ShippingMethod extends Model
 
     protected $fillable = [
         'name',
-        'description',
+        'code',
         'carrier_id',
-        'service_code',
-        'cost_calculation_type',
-        'cost_formula',
-        'estimated_delivery_days',
         'is_active',
+        'base_price',
+        'description'
     ];
 
     protected $casts = [
-        'cost_formula' => 'array',
-        'estimated_delivery_days' => 'integer',
         'is_active' => 'boolean',
+        'base_price' => 'decimal:2'
     ];
 
     public function carrier(): BelongsTo
     {
         return $this->belongsTo(ShippingCarrier::class, 'carrier_id');
     }
-} 
+}

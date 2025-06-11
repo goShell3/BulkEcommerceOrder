@@ -89,4 +89,4 @@ class PaymentGatewayConfigPolicy
     {
         return $user->hasRole('admin');
     }
-} 
+}

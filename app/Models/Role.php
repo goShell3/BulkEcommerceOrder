@@ -12,7 +12,7 @@ class Role extends Model
 
     protected $fillable = [
         'name',
-        'description',
+        'slug',
     ];
 
     public function permissions(): BelongsToMany
@@ -23,7 +23,6 @@ class Role extends Model
 
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'user_roles')
-            ->withTimestamps();
+        return $this->belongsToMany(User::class);
     }
-} 
+}

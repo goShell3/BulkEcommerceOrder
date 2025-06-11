@@ -32,19 +32,19 @@ use App\Http\Controllers\Api\AuthController as ApiAuthController;
 |
 */
 
-// Test route
-Route::get('/test', function () {
-    return response()->json(['message' => 'API is working!']);
+// Simple test route
+Route::get('/ping', function () {
+    return response()->json(['message' => 'pong']);
 });
 
 // API Version 1 Routes
 Route::prefix('v1')->group(function () {
 
     // Public routes
-    Route::post('login', [AuthController::class, 'login'])->name('api.login');
-    Route::post('register', [AuthController::class, 'register'])->name('api.register');
-    Route::post('forgot-password', [AuthController::class, 'forgotPassword'])->name('api.password.forgot');
-    Route::post('reset-password', [AuthController::class, 'resetPassword'])->name('api.password.reset');
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 
     // Products and Categories (public)
     Route::get('products', [ProductController::class, 'index'])->name('api.products.index');
@@ -62,9 +62,9 @@ Route::prefix('v1')->group(function () {
         Route::get('me', [AuthController::class, 'me'])->name('api.me');
 
         // User profile
-        Route::get('user', [UserController::class, 'profile'])->name('api.user.profile');
-        Route::put('user', [UserController::class, 'update'])->name('api.user.update');
-        Route::put('user/password', [UserController::class, 'updatePassword'])->name('api.user.password');
+        Route::get('/user', [UserController::class, 'profile']);
+        Route::put('/user', [UserController::class, 'update']);
+        Route::put('/user/password', [UserController::class, 'updatePassword']);
 
         // Address management
         Route::apiResource('addresses', AddressController::class);
@@ -89,6 +89,7 @@ Route::prefix('v1')->group(function () {
             Route::get('b2b/products', [B2BProductController::class, 'index'])->name('api.b2b.products.index');
             Route::get('b2b/orders', [B2BOrderController::class, 'index'])->name('api.b2b.orders.index');
         });
+
 
         // Admin routes
         Route::middleware('role:admin')->group(function () {
@@ -171,5 +172,28 @@ Route::prefix('v1')->group(function () {
             //     'destroy' => 'api.admin.payment.gateways.destroy',
             // ]);
         });
+        // Shipping management
+        Route::get('/shipping-carriers', [ShippingCarrierController::class, 'index']);
+        Route::post('/shipping-carriers', [ShippingCarrierController::class, 'store']);
+        Route::get('/shipping-carriers/{shippingCarrier}', [ShippingCarrierController::class, 'show']);
+        Route::put('/shipping-carriers/{shippingCarrier}', [ShippingCarrierController::class, 'update']);
+        Route::delete('/shipping-carriers/{shippingCarrier}', [ShippingCarrierController::class, 'destroy']);
+
+        // Shipping methods
+        Route::get('/shipping-methods', [ShippingMethodController::class, 'index']);
+        Route::post('/shipping-methods', [ShippingMethodController::class, 'store']);
+        Route::get('/shipping-methods/{shippingMethod}', [ShippingMethodController::class, 'show']);
+        Route::put('/shipping-methods/{shippingMethod}', [ShippingMethodController::class, 'update']);
+        Route::delete('/shipping-methods/{shippingMethod}', [ShippingMethodController::class, 'destroy']);
+
+        // Payment gateways
+        Route::get('/payment-gateways', [PaymentGatewayConfigController::class, 'index']);
+        Route::post('/payment-gateways', [PaymentGatewayConfigController::class, 'store']);
+        Route::get('/payment-gateways/{paymentGatewayConfig}', [PaymentGatewayConfigController::class, 'show']);
+        Route::put('/payment-gateways/{paymentGatewayConfig}', [PaymentGatewayConfigController::class, 'update']);
+        Route::delete('/payment-gateways/{paymentGatewayConfig}', [PaymentGatewayConfigController::class, 'destroy']);
+
+        // Logout
+        Route::post('/logout', [AuthController::class, 'logout']);
     });
 });

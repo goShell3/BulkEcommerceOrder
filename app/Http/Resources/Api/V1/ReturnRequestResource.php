@@ -43,4 +43,4 @@ class ReturnRequestResource extends JsonResource
             'order' => new OrderResource($this->whenLoaded('order')),
         ];
     }
-} 
+}

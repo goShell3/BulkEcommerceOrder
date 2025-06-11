@@ -34,4 +34,4 @@ class AbandonedCart extends Model
     {
         return $this->belongsTo(Order::class, 'converted_to_order_id');
     }
-} 
+}

@@ -44,4 +44,4 @@ class CategoryResource extends JsonResource
             'children' => CategoryResource::collection($this->whenLoaded('children')),
         ];
     }
-} 
+}

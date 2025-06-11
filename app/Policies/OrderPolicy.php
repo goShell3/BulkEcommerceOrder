@@ -65,4 +65,4 @@ class OrderPolicy
     {
         return $user->hasRole('admin');
     }
-} 
+}

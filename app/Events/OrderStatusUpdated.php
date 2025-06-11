@@ -13,7 +13,9 @@ use Illuminate\Queue\SerializesModels;
 
 class OrderStatusUpdated implements ShouldBroadcast
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable;
+    use InteractsWithSockets;
+    use SerializesModels;
 
     /**
      * The order instance.
@@ -70,4 +72,4 @@ class OrderStatusUpdated implements ShouldBroadcast
             'updated_at' => $this->order->updated_at,
         ];
     }
-} 
+}

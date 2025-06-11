@@ -17,7 +17,7 @@ class OrderAndReturnTest extends TestCase
     public function itCanCreateAnOrderWithDefaultFactory()
     {
         $order = Order::factory()->create();
-        
+
         $this->assertInstanceOf(Order::class, $order);
         $this->assertInstanceOf(User::class, $order->user);
         $this->assertIsArray($order->shipping_address);
@@ -76,7 +76,7 @@ class OrderAndReturnTest extends TestCase
     public function itCanCreateAReturnRequestWithDefaultFactory()
     {
         $returnRequest = ReturnRequest::factory()->create();
-        
+
         $this->assertInstanceOf(ReturnRequest::class, $returnRequest);
         $this->assertInstanceOf(Order::class, $returnRequest->order);
         $this->assertNotEmpty($returnRequest->reason);
@@ -123,7 +123,7 @@ class OrderAndReturnTest extends TestCase
     public function itCanCreateUrgentReturnRequests()
     {
         $urgentReturn = ReturnRequest::factory()->urgent()->create();
-        
+
         $this->assertTrue(
             $urgentReturn->created_at->diffInDays(now()) <= 2
         );
@@ -134,14 +134,14 @@ class OrderAndReturnTest extends TestCase
     {
         // Create a high-value order first
         $order = Order::factory()->highValue()->create();
-        
+
         // Create a return request for this order
         $returnRequest = ReturnRequest::factory()->create(
             [
             'order_id' => $order->id
             ]
         );
-        
+
         $this->assertGreaterThanOrEqual(500, $returnRequest->order->total);
     }
 
@@ -177,4 +177,4 @@ class OrderAndReturnTest extends TestCase
         $this->assertEquals('Wrong item received', $returnRequest->reason);
         $this->assertTrue($returnRequest->created_at->diffInDays(now()) <= 2);
     }
-} 
+}
