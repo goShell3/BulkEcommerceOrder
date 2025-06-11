@@ -19,7 +19,7 @@ return new class extends Migration
             $table->decimal('min_order_amount', 10, 2)->nullable();
             $table->decimal('max_discount_amount', 10, 2)->nullable();
             $table->timestamp('start_date');
-            $table->timestamp('end_date');
+            $table->timestamp('end_date')->nullable();
             $table->integer('usage_limit')->nullable();
             $table->integer('per_user_limit')->nullable();
             $table->boolean('is_active')->default(true);
@@ -39,7 +39,7 @@ return new class extends Migration
         Schema::create('discount_category', function (Blueprint $table) {
             $table->id();
             $table->foreignId('discount_id')->constrained()->onDelete('cascade');
-            $table->foreignId('category_id')->constrained()->onDelete('cascade');
+            $table->foreignId('categories_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

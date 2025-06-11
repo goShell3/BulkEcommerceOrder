@@ -15,10 +15,14 @@ class ProductSeeder extends Seeder
         $nikeBrandId = Brand::where('slug', 'nike')->first()->id;
         $adidasBrandId = Brand::where('slug', 'adidas')->first()->id;
 
+        // Get a random category ID
+        $categoryId = Category::inRandomOrder()->first()->id;
+
         // Create some predefined products
         $products = [
             [
                 'brand_id' => $nikeBrandId,
+                'category_id' => $categoryId,
                 'name' => 'Nike Air Max',
                 'slug' => 'nike-air-max',
                 'description' => 'Classic running shoes with air cushioning',
@@ -28,6 +32,7 @@ class ProductSeeder extends Seeder
             ],
             [
                 'brand_id' => $adidasBrandId,
+                'category_id' => $categoryId,
                 'name' => 'Adidas Ultraboost',
                 'slug' => 'adidas-ultraboost',
                 'description' => 'Premium running shoes with responsive boost technology',
@@ -37,15 +42,16 @@ class ProductSeeder extends Seeder
             ],
         ];
 
-        foreach ($products as $product) {
-            Product::create($product);
+        foreach ($products as $productData) {
+            Product::create($productData);
         }
 
         // Create additional random products
         Product::factory(20)->create()->each(function ($product) {
-            // Attach 1-3 random categories to each product
-            $categories = Category::inRandomOrder()->take(rand(1, 3))->get();
-            $product->categories()->attach($categories);
+            // Assign a random category to each product
+            $product->category_id = Category::inRandomOrder()->first()->id;
+            $product->save();
         });
+
     }
 } 

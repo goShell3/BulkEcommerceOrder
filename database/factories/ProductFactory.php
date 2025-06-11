@@ -27,6 +27,7 @@ class ProductFactory extends Factory
     {
         return [
             'brand_id' => Brand::factory(),
+            'category_id' => \App\Models\Category::inRandomOrder()->first()->id,
             'name' => fake()->words(3, true),
             'slug' => fn (array $attributes) => str()->slug($attributes['name']),
             'description' => fake()->paragraph(),

@@ -96,11 +96,6 @@ class Product extends Model
         return $this->hasMany(OrderItem::class);
     }
 
-    public function bulkPricingTiers(): HasMany
-    {
-        return $this->hasMany(BulkPricingTier::class);
-    }
-
     public function discounts(): BelongsToMany
     {
         return $this->belongsToMany(Discount::class);
