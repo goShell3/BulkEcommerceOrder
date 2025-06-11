@@ -82,8 +82,10 @@ class Discount extends Model
 
     /**
      * Get the categories that this discount applies to.
+
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+
      */
     public function categories(): BelongsToMany
     {

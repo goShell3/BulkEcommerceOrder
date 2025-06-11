@@ -90,6 +90,88 @@ Route::prefix('v1')->group(function () {
             Route::get('b2b/orders', [B2BOrderController::class, 'index'])->name('api.b2b.orders.index');
         });
 
+
+        // Admin routes
+        Route::middleware('role:admin')->group(function () {
+            
+            // Product management
+            Route::apiResource('products', ProductController::class)->except(['index', 'show'])->names([
+                'store' => 'api.admin.products.store',
+                'update' => 'api.admin.products.update',
+                'destroy' => 'api.admin.products.destroy',
+            ]);
+            
+            // Category management 
+            Route::apiResource('categories', CategoryController::class)->except(['index', 'show'])->names([
+                'store' => 'api.admin.categories.store',
+                'update' => 'api.admin.categories.update',
+                'destroy' => 'api.admin.categories.destroy',
+            ]);
+            
+            // Order management
+            Route::put('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('api.admin.orders.status');
+            Route::put('orders/{order}/shipping', [OrderController::class, 'updateShipping'])->name('api.admin.orders.shipping');
+            
+            // Return request management
+            Route::put('return-requests/{returnRequest}/status', [ReturnRequestController::class, 'updateStatus'])->name('api.admin.returns.status');
+            Route::put('return-requests/{returnRequest}/approve', [ReturnRequestController::class, 'approve'])->name('api.admin.returns.approve');
+            Route::put('return-requests/{returnRequest}/reject', [ReturnRequestController::class, 'reject'])->name('api.admin.returns.reject');
+
+            // Discount management
+            Route::apiResource('discounts', DiscountController::class)->names([
+                'index' => 'api.admin.discounts.index',
+                'store' => 'api.admin.discounts.store',
+                'show' => 'api.admin.discounts.show',
+                'update' => 'api.admin.discounts.update',
+                'destroy' => 'api.admin.discounts.destroy',
+            ]);
+
+            // B2B management
+            Route::apiResource('b2b/users', B2BUserController::class)->names([
+                'index' => 'api.admin.b2b.users.index',
+                'store' => 'api.admin.b2b.users.store',
+                'show' => 'api.admin.b2b.users.show',
+                'update' => 'api.admin.b2b.users.update',
+                'destroy' => 'api.admin.b2b.users.destroy',
+            ]);
+            Route::apiResource('b2b/products', B2BProductController::class)->except(['index'])->names([
+                'store' => 'api.admin.b2b.products.store',
+                'show' => 'api.admin.b2b.products.show',
+                'update' => 'api.admin.b2b.products.update',
+                'destroy' => 'api.admin.b2b.products.destroy',
+            ]);
+            Route::apiResource('b2b/orders', B2BOrderController::class)->except(['index'])->names([
+                'store' => 'api.admin.b2b.orders.store',
+                'show' => 'api.admin.b2b.orders.show',
+                'update' => 'api.admin.b2b.orders.update',
+                'destroy' => 'api.admin.b2b.orders.destroy',
+            ]);
+
+            // Shipping management
+            // Route::apiResource('shipping-carriers', ShippingCarrierController::class)->names([
+            //     'index' => 'api.admin.shipping.carriers.index',
+            //     'store' => 'api.admin.shipping.carriers.store',
+            //     'show' => 'api.admin.shipping.carriers.show',
+            //     'update' => 'api.admin.shipping.carriers.update',
+            //     'destroy' => 'api.admin.shipping.carriers.destroy',
+            // ]);
+            // Route::apiResource('shipping-methods', ShippingMethodController::class)->names([
+            //     'index' => 'api.admin.shipping.methods.index',
+            //     'store' => 'api.admin.shipping.methods.store',
+            //     'show' => 'api.admin.shipping.methods.show',
+            //     'update' => 'api.admin.shipping.methods.update',
+            //     'destroy' => 'api.admin.shipping.methods.destroy',
+            // ]);
+
+            // // Payment gateway management
+            // Route::apiResource('payment-gateways', PaymentGatewayConfigController::class)->names([
+            //     'index' => 'api.admin.payment.gateways.index',
+            //     'store' => 'api.admin.payment.gateways.store',
+            //     'show' => 'api.admin.payment.gateways.show',
+            //     'update' => 'api.admin.payment.gateways.update',
+            //     'destroy' => 'api.admin.payment.gateways.destroy',
+            // ]);
+        });
         // Shipping management
         Route::get('/shipping-carriers', [ShippingCarrierController::class, 'index']);
         Route::post('/shipping-carriers', [ShippingCarrierController::class, 'store']);

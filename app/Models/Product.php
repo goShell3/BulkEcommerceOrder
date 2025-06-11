@@ -95,9 +95,8 @@ class Product extends Model
     }
 
     /**
+
      * Get the variants for the product.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function variants(): HasMany
     {
@@ -106,6 +105,10 @@ class Product extends Model
 
     /**
      * Get the stock for the product.
+
+     * Get the categories for the product.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function stock(): HasOne
     {
@@ -123,43 +126,45 @@ class Product extends Model
     }
 
     /**
+
+     * Get the bulk pricing tiers for the product.
+     */
+    public function bulkPricingTiers(): HasMany
+
      * Get the product options.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function options(): HasMany
-    /**
-     * Get the bulk pricing tiers for the product.
-     */
-    public function bulkPricingTiers(): HasMany
     {
         return $this->hasMany(BulkPricingTier::class);
     }
 
     /**
+     * Get the discounts that apply to this product.
+     */
+    public function discounts(): BelongsToMany
+
      * Get the product variants.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function variants(): HasMany
-    /**
-     * Get the discounts that apply to this product.
-     */
-    public function discounts(): BelongsToMany
     {
         return $this->belongsToMany(Discount::class);
     }
 
     /**
+
+     * Scope a query to only include active products.
+     */
+    public function scopeActive($query)
+
      * Get the inventory logs for the product.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function inventoryLogs(): HasMany
-    /**
-     * Scope a query to only include active products.
-     */
-    public function scopeActive($query)
     {
         return $query->where('is_active', true);
     }
@@ -168,14 +173,29 @@ class Product extends Model
      * Scope a query to only include B2B products.
      */
     public function scopeB2B($query)
+
+     * Get the quote request items for the product.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function quoteRequestItems(): HasMany
+
     {
         return $query->where('is_b2b', true);
     }
 
     /**
+
      * Scope a query to only include featured B2B products.
      */
     public function scopeFeaturedB2B($query)
+
+     * Get the discounts associated with the product.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function discounts(): HasMany
+
     {
         return $query->where('is_featured_b2b', true)
             ->where(function ($query) {
