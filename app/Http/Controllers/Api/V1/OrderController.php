@@ -8,12 +8,15 @@ use App\Http\Requests\Api\V1\Order\UpdateOrderStatusRequest;
 use App\Http\Resources\Api\V1\OrderResource;
 use App\Models\Order;
 use App\Models\Cart;
+use App\Models\Product;
 use App\Models\OrderItem;
+use App\Http\Resources\Api\V1\ReturnRequestResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+
 
 /**
  * @OA\Tag(
@@ -61,20 +64,30 @@ class OrderController extends Controller
      *     )
      * )
      */
-    public function index(): AnonymousResourceCollection
+    public function index(Request $request): AnonymousResourceCollection
     {
-        $query = Order::query();
+        $query = auth()->user()->orders()->with(['items.product', 'shippingAddress', 'billingAddress']);
 
-        if (request('status')) {
-            $query->where('status', request('status'));
+        // Apply filters
+        if ($request->has('status')) {
+            $query->where('status', $request->status);
         }
 
-        if (request('sort')) {
-            $order = request('order', 'desc');
-            $query->orderBy(request('sort'), $order);
+        if ($request->has('date_from')) {
+            $query->whereDate('created_at', '>=', $request->date_from);
         }
 
-        $orders = $query->with(['items.product', 'user'])->paginate(10);
+        if ($request->has('date_to')) {
+            $query->whereDate('created_at', '<=', $request->date_to);
+        }
+
+        // Apply sorting
+        $sortField = $request->get('sort_by', 'created_at');
+        $sortDirection = $request->get('sort_direction', 'desc');
+        $query->orderBy($sortField, $sortDirection);
+
+        $orders = $query->paginate($request->get('per_page', 15));
+
         return OrderResource::collection($orders);
     }
 
@@ -103,7 +116,11 @@ class OrderController extends Controller
      */
     public function show(Order $order): OrderResource
     {
-        return new OrderResource($order->load(['items.product', 'user']));
+        if ($order->user_id !== auth()->id() && !auth()->user()->hasRole('admin')) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        return new OrderResource($order->load(['items.product', 'shippingAddress', 'billingAddress']));
     }
 
     /**
@@ -149,28 +166,73 @@ class OrderController extends Controller
      *     )
      * )
      */
-    public function store(StoreOrderRequest $request): OrderResource
+    public function store(Request $request): OrderResource
     {
-        $order = Order::create(
-            [
-            'user_id' => auth()->id(),
-            'status' => 'pending',
-            'shipping_address' => $request->shipping_address,
-            'total' => 0, // Will be calculated in the observer
-            ]
-        );
+        $validator = Validator::make($request->all(), [
+            'shipping_address_id' => 'required|exists:addresses,id',
+            'billing_address_id' => 'required|exists:addresses,id',
+            'payment_method' => 'required|string',
+            'shipping_method' => 'required|string',
+            'items' => 'required|array|min:1',
+            'items.*.product_id' => 'required|exists:products,id',
+            'items.*.quantity' => 'required|integer|min:1',
+            'notes' => 'nullable|string',
+        ]);
 
-        foreach ($request->items as $item) {
-            $order->items()->create(
-                [
-                'product_id' => $item['product_id'],
-                'quantity' => $item['quantity'],
-                'price' => 0, // Will be set from product price
-                ]
-            );
+        if ($validator->fails()) {
+            return response()->json(['message' => 'Validation failed', 'errors' => $validator->errors()], 422);
         }
 
-        return new OrderResource($order->load(['items.product', 'user']));
+        try {
+            DB::beginTransaction();
+
+            // Calculate order total
+            $total = 0;
+            $items = collect($request->items)->map(function ($item) use (&$total) {
+                $product = Product::findOrFail($item['product_id']);
+                
+                if ($product->stock < $item['quantity']) {
+                    throw new \Exception("Insufficient stock for product: {$product->name}");
+                }
+
+                $subtotal = $product->price * $item['quantity'];
+                $total += $subtotal;
+
+                return [
+                    'product_id' => $item['product_id'],
+                    'quantity' => $item['quantity'],
+                    'price' => $product->price,
+                    'subtotal' => $subtotal
+                ];
+            });
+
+            // Create order
+            $order = auth()->user()->orders()->create([
+                'shipping_address_id' => $request->shipping_address_id,
+                'billing_address_id' => $request->billing_address_id,
+                'payment_method' => $request->payment_method,
+                'shipping_method' => $request->shipping_method,
+                'total' => $total,
+                'status' => 'pending',
+                'notes' => $request->notes
+            ]);
+
+            // Create order items
+            $order->items()->createMany($items);
+
+            // Update product stock
+            foreach ($items as $item) {
+                $product = Product::find($item['product_id']);
+                $product->decrement('stock', $item['quantity']);
+            }
+
+            DB::commit();
+
+            return new OrderResource($order->load(['items.product', 'shippingAddress', 'billingAddress']));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['message' => 'Failed to create order', 'error' => $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -212,10 +274,37 @@ class OrderController extends Controller
      *     )
      * )
      */
-    public function updateStatus(UpdateOrderStatusRequest $request, Order $order): OrderResource
+    public function updateStatus(Request $request, Order $order): OrderResource
     {
-        $order->update(['status' => $request->status]);
-        return new OrderResource($order->load(['items.product', 'user']));
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'status' => 'required|in:pending,processing,shipped,delivered,cancelled',
+            'tracking_number' => 'nullable|string',
+            'notes' => 'nullable|string'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['message' => 'Validation failed', 'errors' => $validator->errors()], 422);
+        }
+
+        try {
+            $order->update($request->all());
+
+            // If order is cancelled, restore product stock
+            if ($request->status === 'cancelled' && $order->status !== 'cancelled') {
+                foreach ($order->items as $item) {
+                    $product = Product::find($item->product_id);
+                    $product->increment('stock', $item->quantity);
+                }
+            }
+
+            return new OrderResource($order->load(['items.product', 'shippingAddress', 'billingAddress']));
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to update order status', 'error' => $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -247,12 +336,36 @@ class OrderController extends Controller
      */
     public function cancel(Order $order): OrderResource
     {
-        if (!$order->canBeCancelled()) {
-            return response()->json(['message' => 'Order cannot be cancelled'], 422);
+        if ($order->user_id !== auth()->id() && !auth()->user()->hasRole('admin')) {
+            return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        $order->update(['status' => 'cancelled']);
-        return new OrderResource($order->load(['items.product', 'user']));
+        if ($order->status === 'cancelled') {
+            return response()->json(['message' => 'Order is already cancelled'], 400);
+        }
+
+        if ($order->status === 'delivered') {
+            return response()->json(['message' => 'Cannot cancel a delivered order'], 400);
+        }
+
+        try {
+            DB::beginTransaction();
+
+            $order->update(['status' => 'cancelled']);
+
+            // Restore product stock
+            foreach ($order->items as $item) {
+                $product = Product::find($item->product_id);
+                $product->increment('stock', $item->quantity);
+            }
+
+            DB::commit();
+
+            return new OrderResource($order->load(['items.product', 'shippingAddress', 'billingAddress']));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['message' => 'Failed to cancel order', 'error' => $e->getMessage()], 500);
+        }
     }
 
     /**

@@ -10,16 +10,29 @@ class Brand extends Model
 {
     use HasFactory;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
         'name',
         'slug',
         'description',
         'logo',
-        'is_active'
+        'website',
+        'is_active',
+        'order',
     ];
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
     protected $casts = [
         'is_active' => 'boolean',
+        'order' => 'integer',
     ];
 
     /**
@@ -29,4 +42,13 @@ class Brand extends Model
     {
         return $this->hasMany(Product::class);
     }
-}
+
+
+    /**
+     * Scope a query to only include active brands.
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+} 
