@@ -17,6 +17,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class Product extends Model
 {
@@ -109,6 +111,16 @@ class Product extends Model
     public function quoteRequestItems(): HasMany
     {
         return $this->hasMany(QuoteRequestItem::class);
+    }
+
+    public function images(): MorphMany
+    {
+        return $this->morphMany(Image::class, 'imageable');
+    }
+
+    public function primaryImage(): MorphOne
+    {
+        return $this->morphOne(Image::class, 'imageable')->where('is_primary', true);
     }
 
     // Scopes

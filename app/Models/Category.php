@@ -13,6 +13,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class Category extends Model
 {
@@ -73,5 +75,15 @@ class Category extends Model
     public function scopeRoot($query)
     {
         return $query->whereNull('parent_id');
+    }
+
+    public function images()
+    {
+        return $this->morphMany(Image::class, 'imageable');
+    }
+
+    public function primaryImage()
+    {
+        return $this->morphOne(Image::class, 'imageable')->where('is_primary', true);
     }
 }

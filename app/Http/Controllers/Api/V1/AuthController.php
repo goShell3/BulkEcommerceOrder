@@ -57,70 +57,60 @@ class AuthController extends Controller
     public function login(LoginRequest $request): JsonResponse
     {
         try {
+            Log::info('Login attempt', ['email' => $request->email]);
+
             $user = User::where('email', $request->email)->first();
 
             if (!$user) {
+                Log::warning('Login failed: User not found', ['email' => $request->email]);
                 return response()->json([
                     'success' => false,
-                    'message' => 'User not found',
+                    'message' => 'Invalid credentials',
                     'errors' => [
                         'email' => ['No account found with this email address.']
                     ]
-                ], 404);
+                ], 422);
             }
 
             if (!Hash::check($request->password, $user->password)) {
+                Log::warning('Login failed: Invalid password', ['email' => $request->email]);
                 return response()->json([
                     'success' => false,
                     'message' => 'Invalid credentials',
                     'errors' => [
                         'password' => ['The provided password is incorrect.']
                     ]
-                ], 401);
-            }
-
-            // Check if user is active
-            if (!$user->is_active) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Account is inactive',
-                    'errors' => [
-                        'account' => ['Your account has been deactivated. Please contact support.']
-                    ]
-                ], 403);
+                ], 422);
             }
 
             // Revoke existing tokens
             $user->tokens()->delete();
 
-            // Create new token with expiration
-            $token = $user->createToken('api-token', ['*'], now()->addHours(24))->plainTextToken;
-            $refreshToken = $user->createToken('refresh-token', ['refresh'], now()->addDays(30))->plainTextToken;
+            // Create new token
+            $token = $user->createToken($request->device_name ?? 'api-token')->plainTextToken;
+
+            Log::info('Login successful', ['email' => $request->email, 'user_id' => $user->id]);
 
             return response()->json([
                 'success' => true,
-                'message' => 'Login successful',
                 'data' => [
                     'token' => $token,
-                    'refresh_token' => $refreshToken,
                     'token_type' => 'Bearer',
-                    'expires_in' => 86400, // 24 hours in seconds
                     'user' => new UserResource($user)
                 ]
             ]);
 
         } catch (\Exception $e) {
-            Log::error('Login error: ' . $e->getMessage(), [
+            Log::error('Login error', [
                 'email' => $request->email,
+                'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'An unexpected error occurred during login',
-                'errors' => [
-                    'system' => ['Please try again later or contact support if the problem persists.']
-                ]
+                'message' => 'An error occurred during login',
+                'error' => $e->getMessage()
             ], 500);
         }
     }
@@ -156,27 +146,37 @@ class AuthController extends Controller
      */
     public function register(RegisterRequest $request): JsonResponse
     {
-        $user = User::create(
-            [
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            ]
-        );
+        try {
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
 
-        $token = $user->createToken('api-token', ['*'], now()->addHours(24))->plainTextToken;
-        $refreshToken = $user->createToken('refresh-token', ['refresh'], now()->addDays(30))->plainTextToken;
+            $token = $user->createToken($request->device_name ?? 'api-token')->plainTextToken;
 
-        return response()->json(
-            [
-            'token' => $token,
-            'refresh_token' => $refreshToken,
-            'token_type' => 'Bearer',
-            'expires_in' => 86400,
-            'user' => new UserResource($user)
-            ],
-            201
-        );
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'token' => $token,
+                    'token_type' => 'Bearer',
+                    'user' => new UserResource($user)
+                ]
+            ], 201);
+
+        } catch (\Exception $e) {
+            Log::error('Registration error', [
+                'email' => $request->email,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred during registration',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -300,8 +300,25 @@ class AuthController extends Controller
      */
     public function logout(Request $request): JsonResponse
     {
-        $request->user()->currentAccessToken()->delete();
-        return response()->json(['message' => 'Successfully logged out']);
+        try {
+            $request->user()->currentAccessToken()->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Successfully logged out'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Logout error', [
+                'user_id' => $request->user()->id,
+                'error' => $e->getMessage()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred during logout',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -312,6 +329,22 @@ class AuthController extends Controller
      */
     public function me(Request $request): JsonResponse
     {
-        return response()->json(new UserResource($request->user()));
+        try {
+            return response()->json([
+                'success' => true,
+                'data' => new UserResource($request->user())
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Get user details error', [
+                'user_id' => $request->user()->id,
+                'error' => $e->getMessage()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while fetching user details',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

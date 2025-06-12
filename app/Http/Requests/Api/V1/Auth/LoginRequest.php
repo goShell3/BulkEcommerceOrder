@@ -6,7 +6,6 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class LoginRequest extends FormRequest
 {
-
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -14,6 +13,7 @@ class LoginRequest extends FormRequest
     {
         return true;
     }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -22,8 +22,9 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'string', 'email', 'max:255'],
-            'password' => ['required', 'string', 'min:8'],
+            'email' => ['required', 'string', 'email'],
+            'password' => ['required', 'string'],
+            'device_name' => ['nullable', 'string'],
         ];
     }
 
@@ -35,11 +36,9 @@ class LoginRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'email.required' => 'Please enter your email address.',
-            'email.email' => 'Please enter a valid email address.',
-            'email.max' => 'Email address cannot exceed 255 characters.',
-            'password.required' => 'Please enter your password.',
-            'password.min' => 'Password must be at least 8 characters long.',
+            'email.required' => 'Email is required',
+            'email.email' => 'Please provide a valid email address',
+            'password.required' => 'Password is required',
         ];
     }
 
